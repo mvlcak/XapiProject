@@ -16,6 +16,8 @@ class Activity(models.Model):
     verb = models.CharField(max_length=200)
     object = models.CharField(max_length=200)   
     pub_date = models.DateTimeField('date published')
+    timestamp =models.CharField(max_length=200)
+    id_activity =models.CharField(max_length=200)
 
     def __str__(self):
         return self.actor +" "+self.verb+" "+self.object
