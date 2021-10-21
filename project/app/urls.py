@@ -10,12 +10,14 @@ urlpatterns = [
      # ex: /person/id/
     path('person/<int:person_id>/', views.detailPerson, name='detailPerson'),
     
-    path('register', views.registerPage, name='register'),
-
-    path('login', views.loginPage, name='login'),
+    path('registerPage', views.registerPage, name='registerPage'),
+    path('register', views.register, name='register'),
+    path('loginPage', views.loginPage, name='loginPage'),
     path('logout/', views.logoutUser, name="logout"),
     path('main', views.mainPage, name='main'),
     path('persons', views.personsPage, name='persons'),
     path('activities', views.activitiesPage, name='activities'),
+    path('loginIn', views.loginIn, name='loginIn'),
+
     
 ]
