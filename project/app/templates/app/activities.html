@@ -11,8 +11,10 @@
 <body>
     {%  include 'app/navbar.html' %}
     <ul>
-    {% for list in activityList %}
-        <li>{{list.li}}</li>
+    {% for activity in activityList %}
+        <li>{{activity.actor}}</li>
+        <li>{{activity.verb}}</li>
+        <li>{{activity.object}}</li>
     {% endfor %}
     </ul>
 </body>
