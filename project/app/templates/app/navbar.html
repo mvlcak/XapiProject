@@ -16,10 +16,13 @@
       <li class="nav-item">
         <a class="nav-link" href="{% url 'activities' %}">Activities</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'loadDb' %}">Load db</a>
+      </li>
     </ul>
   </div>
 
-  <span class="hello-msg">Hello, {{request.user}}</span>
+  <span class="hello-msg"> {{request.user}}</span>
   <span ><a  class="hello-msg" href="{% url 'logout' %}">Logout</a></span>
 
 </nav>

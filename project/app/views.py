@@ -35,18 +35,7 @@ def mainPage(request):
 
 @login_required(login_url='loginIn')
 def activitiesPage(request):
-	response = requests.get('https://watershedlrs.com/api/organizations/15941/query/export?type=json',
-                            auth=('a8970a17258465', '1acab410733815'))
-	text = json.loads(response.text)
-	activityList=[]
-	for activity in text:
-		list=[]
-		list.append(activity['actor']['name'])
-		list.append(activity['verb']['display']['en'])
-		list.append(activity['object']['definition']['name']['en'])
-		list.append(activity['timestamp'])
-		list.append(activity['id'])
-		activityList.append(list)
+	activityList=Activity.objects.all
 	return render(request, 'app/activities.html', {'activityList':activityList})  
 
 @login_required(login_url='loginIn')
@@ -82,3 +71,22 @@ def register(request):
 	user = User.objects.create_user(username, email, password)
 	user.save
 	return redirect('loginPage')
+
+def loadDb(request):
+	response = requests.get('https://watershedlrs.com/api/organizations/15941/query/export?type=json',
+                            auth=('a8970a17258465', '1acab410733815'))
+	text = json.loads(response.text)
+	for activity in text:
+		if Person.objects.get(person_name=activity['actor']['name']) is None:
+			person=Person(person_name=activity['actor']['name'])
+			person.save
+		a=Activity(
+			Person=Person.objects.get(person_name=activity['actor']['name']),
+		actor=activity['actor']['name'],
+		verb=activity['verb']['display']['en'],
+		object=activity['object']['definition']['name']['en'],
+		timestamp =activity['timestamp'],
+		id_activity=activity['id'])
+		a.save
+	return redirect('main')		
+		

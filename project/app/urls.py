@@ -18,6 +18,7 @@ urlpatterns = [
     path('persons', views.personsPage, name='persons'),
     path('activities', views.activitiesPage, name='activities'),
     path('loginIn', views.loginIn, name='loginIn'),
+    path('loadDb', views.loadDb, name='loadDb'),
 
     
 ]
