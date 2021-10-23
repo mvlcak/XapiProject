@@ -7,9 +7,10 @@
     <title>Document</title>
 </head>
 <body>
+    {%  include 'app/navbar.html' %}
     <ul>
     {% for list in activityList %}
-        <li>{{list.}}</li>
+        <li>{{list.li}}</li>
     {% endfor %}
     </ul>
 </body>
