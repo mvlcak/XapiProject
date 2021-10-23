@@ -105,3 +105,4 @@ GitHub.sublime-settings
 /data
 data/*
 .data/*
+data/
