@@ -8,6 +8,10 @@ services:
     ports:
       - "5432:5432"  
     restart: always  
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
   web:
     build: .
     command: python project/manage.py runserver 0.0.0.0:8000
