@@ -43,6 +43,7 @@ def personsPage(request):
 	persons=Person.objects.all
 	return render(request, 'app/persons.html',{'persons':persons})        
 
+@login_required(login_url='loginIn')
 def index(request):
     return render(request, 'app/index.html')
 
