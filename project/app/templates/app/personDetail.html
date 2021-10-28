@@ -1,6 +1,41 @@
 {%  include 'app/head.html' %}
 <body>
     {%  include 'app/navbar.html' %}
-    {{ person.person_name }}
+    <h2>{{ person.person_name }}</h2>
+    <div class="container">
+       <div class="row">
+           <div class="col">
+
+           </div>
+           <div class="col">
+
+           </div>
+           <div class="col">
+
+        </div>
+       </div> 
+    </div>
+    <div class="row">
+        <div class="col">
+
+        </div>
+        <div class="col">
+
+        </div>
+        <div class="col">
+            <h3>Last activities</h3>
+            <ul >
+          {% for activity in lastActivities %}
+                <li style="background: white;">
+                    <a href="{% url 'detailPerson' activity.person.id %}">{{activity.actor}}</a>
+                    {{activity.verb}}
+                    {{activity.object}}
+                    {{activity.timestamp}}
+                </li>
+            {% endfor %}
+              </ul>
+     </div>
+    </div> 
+ </div>
 </body>
 </html>

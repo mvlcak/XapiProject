@@ -9,11 +9,12 @@ from django.contrib.auth.forms import UserCreationForm
 from .forms import  CreateUserForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, authenticate, login, logout
-
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 import requests,json
-
+from operator import itemgetter
+import datetime
 
 def registerPage(request):
 	if request.user.is_authenticated:
@@ -31,11 +32,31 @@ def logoutUser(request):
 
 @login_required(login_url='loginIn')
 def mainPage(request):
-    return render(request, 'app/main.html')
+	activityCount=Activity.objects.count()
+	personCount=Person.objects.count()
+	lastActivities=Activity.objects.all()[::-1][:5]
+	persons=Person.objects.all()
+	personsInteractions=[]
+	for pers in persons:
+		personsInteractions.append([pers.person_name,Activity.objects.filter(person=pers).count()])
+	personsInteractions=sorted(personsInteractions, key=itemgetter(1))[::-1][:5]
+	activities=Activity.objects.distinct()
+	activitiesInteractions=[]
+	myset=set()
+	for act in activities:
+		myset.add(act.verb)
+	for act in myset:
+		activitiesInteractions.append([act,Activity.objects.filter(verb=act).count()])
+	activitiesInteractions=sorted(activitiesInteractions, key=itemgetter(1))[::-1][:10]
+	
+	(datetime.datetime.now() - datetime.timedelta(days=7)).date()
+	return render(request, 'app/main.html',{'activityCount':activityCount,'personCount':personCount,
+	'lastActivities':lastActivities,
+	'personsInteractions':personsInteractions,'activitiesInteractions':activitiesInteractions,})
 
 @login_required(login_url='loginIn')
 def activitiesPage(request):
-	activityList=Activity.objects.all
+	activityList=Activity.objects.all()[::-1]
 	return render(request, 'app/activities.html', {'activityList':activityList})  
 
 @login_required(login_url='loginIn')
@@ -49,8 +70,10 @@ def index(request):
 
 @login_required(login_url='loginIn')
 def detailPerson(request, person_id):
-    person = get_object_or_404(Person, pk=person_id)
-    return render(request, 'app/personDetail.html', {'person': person})
+	lastActivities=Activity.objects.filter(person=person_id)[::-1][:5]
+    
+	person = get_object_or_404(Person, pk=person_id)
+	return render(request, 'app/personDetail.html', {'person': person,'lastActivities':lastActivities})
 
 @login_required(login_url='loginIn')
 def detailActivity(request, activity_id):
@@ -62,7 +85,7 @@ def loginIn(request):
 	user = authenticate(username=username, password=password)
 	if user is not None:
 		login(request, user)
-		return render(request, 'app/main.html')
+		return redirect('main')
 	else:
 		return redirect('loginPage')
 
