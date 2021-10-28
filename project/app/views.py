@@ -48,11 +48,33 @@ def mainPage(request):
 	for act in myset:
 		activitiesInteractions.append([act,Activity.objects.filter(verb=act).count()])
 	activitiesInteractions=sorted(activitiesInteractions, key=itemgetter(1))[::-1][:10]
-	
+	last7=[]
+	for act in activities:
+		if act.timestamp[:9] == (datetime.datetime.now() - datetime.timedelta(days=7)).date():
+			last7.append([(datetime.datetime.now() - datetime.timedelta(days=7)).date(),
+			Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=7)).count()])
+		if act.timestamp[:9] == (datetime.datetime.now() - datetime.timedelta(days=6)).date():
+			last7.append([(datetime.datetime.now() - datetime.timedelta(days=6)).date(),
+			Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=7)).count()])
+		if act.timestamp[:9] == (datetime.datetime.now() - datetime.timedelta(days=5)).date():
+			last7.append([(datetime.datetime.now() - datetime.timedelta(days=5)).date(),
+			Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=7)).count()])
+		if act.timestamp[:9] == (datetime.datetime.now() - datetime.timedelta(days=4)).date():
+			last7.append([(datetime.datetime.now() - datetime.timedelta(days=4)).date(),
+			Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=7)).count()])
+		if act.timestamp[:9] == (datetime.datetime.now() - datetime.timedelta(days=3)).date():
+			last7.append([(datetime.datetime.now() - datetime.timedelta(days=3)).date(),
+			Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=7)).count()])
+		if act.timestamp[:9] == (datetime.datetime.now() - datetime.timedelta(days=2)).date():
+			last7.append([(datetime.datetime.now() - datetime.timedelta(days=2)).date(),
+			Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=7)).count()])
+		if act.timestamp[:9] == (datetime.datetime.now() - datetime.timedelta(days=1)).date():		
+			last7.append([(datetime.datetime.now() - datetime.timedelta(days=1)).date(),
+			Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=7)).count()])
 	(datetime.datetime.now() - datetime.timedelta(days=7)).date()
 	return render(request, 'app/main.html',{'activityCount':activityCount,'personCount':personCount,
 	'lastActivities':lastActivities,
-	'personsInteractions':personsInteractions,'activitiesInteractions':activitiesInteractions,})
+	'personsInteractions':personsInteractions,'activitiesInteractions':activitiesInteractions,'last7':last7})
 
 @login_required(login_url='loginIn')
 def activitiesPage(request):
