@@ -4,8 +4,21 @@ html {
     margin: 0;
     padding: 0;
     height: 100%;
-    background: linear-gradient(to right, hsl(200, 100%, 50%), hsl(175, 100%, 50%));
+    background: linear-gradient(to right, hsl(212, 80%, 63%), rgb(58, 238, 199));
+    font-family: sans-serif;
 }
+
+.backgroundWhite {
+background: linear-gradient(to right, hsl(0, 0%, 100%), rgb(173, 173, 173));
+border-radius: 10%;
+text-align: center;
+margin: 10px 10px;
+}
+
+.col {
+margin: 10px;
+}
+
 .user_card {
     width: 350px;
     margin-top: auto;
