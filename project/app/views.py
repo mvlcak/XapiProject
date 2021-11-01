@@ -1,19 +1,15 @@
 from django.shortcuts import redirect, render
 
 from django.http import HttpResponse
-from django.template import loader
 from .models import *
-from django.http import Http404
 from django.shortcuts import get_object_or_404
-from django.contrib.auth.forms import UserCreationForm
-from .forms import  CreateUserForm
-from django.contrib import messages
 from django.contrib.auth import authenticate, authenticate, login, logout
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-import requests,json
+
 from operator import itemgetter
+import requests,json
 import datetime
 
 def registerPage(request):
@@ -34,7 +30,7 @@ def logoutUser(request):
 def mainPage(request):
 	activityCount=Activity.objects.count()
 	personCount=Person.objects.count()
-	lastActivities=Activity.objects.all()[::-1][:5]
+	lastActivities=Activity.objects.all()[::-1][:7]
 	persons=Person.objects.all()
 	personsInteractions=[]
 	for pers in persons:
@@ -48,33 +44,32 @@ def mainPage(request):
 	for act in myset:
 		activitiesInteractions.append([act,Activity.objects.filter(verb=act).count()])
 	activitiesInteractions=sorted(activitiesInteractions, key=itemgetter(1))[::-1][:10]
-	last7=[]
+	lastDays=[]
 	for act in activities:
 		if act.timestamp[:9] == (datetime.datetime.now() - datetime.timedelta(days=7)).date():
-			last7.append([(datetime.datetime.now() - datetime.timedelta(days=7)).date(),
-			Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=7)).count()])
+			lastDays.append([(datetime.datetime.now() - datetime.timedelta(days=7)).date(),
+							  Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=7)).count()])
 		if act.timestamp[:9] == (datetime.datetime.now() - datetime.timedelta(days=6)).date():
-			last7.append([(datetime.datetime.now() - datetime.timedelta(days=6)).date(),
-			Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=7)).count()])
+			lastDays.append([(datetime.datetime.now() - datetime.timedelta(days=6)).date(),
+							  Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=6)).count()])
 		if act.timestamp[:9] == (datetime.datetime.now() - datetime.timedelta(days=5)).date():
-			last7.append([(datetime.datetime.now() - datetime.timedelta(days=5)).date(),
-			Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=7)).count()])
+			lastDays.append([(datetime.datetime.now() - datetime.timedelta(days=5)).date(),
+							  Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=5)).count()])
 		if act.timestamp[:9] == (datetime.datetime.now() - datetime.timedelta(days=4)).date():
-			last7.append([(datetime.datetime.now() - datetime.timedelta(days=4)).date(),
-			Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=7)).count()])
+			lastDays.append([(datetime.datetime.now() - datetime.timedelta(days=4)).date(),
+							  Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=4)).count()])
 		if act.timestamp[:9] == (datetime.datetime.now() - datetime.timedelta(days=3)).date():
-			last7.append([(datetime.datetime.now() - datetime.timedelta(days=3)).date(),
-			Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=7)).count()])
+			lastDays.append([(datetime.datetime.now() - datetime.timedelta(days=3)).date(),
+							  Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=3)).count()])
 		if act.timestamp[:9] == (datetime.datetime.now() - datetime.timedelta(days=2)).date():
-			last7.append([(datetime.datetime.now() - datetime.timedelta(days=2)).date(),
-			Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=7)).count()])
+			lastDays.append([(datetime.datetime.now() - datetime.timedelta(days=2)).date(),
+							  Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=2)).count()])
 		if act.timestamp[:9] == (datetime.datetime.now() - datetime.timedelta(days=1)).date():		
-			last7.append([(datetime.datetime.now() - datetime.timedelta(days=1)).date(),
-			Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=7)).count()])
+			lastDays.append([(datetime.datetime.now() - datetime.timedelta(days=1)).date(),
+							  Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=1)).count()])
 	(datetime.datetime.now() - datetime.timedelta(days=7)).date()
 	return render(request, 'app/main.html',{'activityCount':activityCount,'personCount':personCount,
-	'lastActivities':lastActivities,
-	'personsInteractions':personsInteractions,'activitiesInteractions':activitiesInteractions,'last7':last7})
+				  'lastActivities':lastActivities,'personsInteractions':personsInteractions,'activitiesInteractions':activitiesInteractions,'lastDays':lastDays})
 
 @login_required(login_url='loginIn')
 def activitiesPage(request):
