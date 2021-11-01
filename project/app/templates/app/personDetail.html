@@ -4,8 +4,8 @@
     <h2>{{ person.person_name }}</h2>
     <div class="container">
        <div class="row">
-           <div class="col">
-
+           <div class="col backgroundWhite">
+            <canvas id="bar-chart" width="33%" height="33%" ></canvas>
            </div>
            <div class="col">
 
@@ -14,11 +14,11 @@
 
         </div>
        </div> 
-    </div>
+    
     <div class="row">
-        <div class="col">
+        <div class="col backgroundWhite">
             <h3>Last activities</h3>
-            <ul class="backgroundWhite" >
+            <ul >
           {% for activity in lastActivities %}
                 <li>
                     <a href="{% url 'detailPerson' activity.person.id %}">{{activity.actor}}</a>
@@ -37,5 +37,28 @@
      </div>
     </div> 
  </div>
+</div>
 </body>
+<script>
+    new Chart(document.getElementById("bar-chart"), {
+        type: 'bar',
+        data: {
+          labels:  ["label"],
+          datasets: [
+            {
+              label: "Interactions",
+              backgroundColor: ["#c45850", ],
+              data: [5]
+            }
+          ]
+        },
+        options: {
+          legend: { display: false },
+          title: {
+            display: true,
+            text: ''
+          }
+        }
+    });
+    </script>
 </html>
