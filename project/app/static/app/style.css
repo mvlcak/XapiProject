@@ -23,7 +23,8 @@ margin: 10px;
     width: 350px;
     margin-top: auto;
     margin-bottom: auto;
-    background: #74cfbf;
+    background: linear-gradient(to right, hsl(0, 0%, 100%), rgb(173, 173, 173));
+
     position: relative;
     display: flex;
     justify-content: center;
@@ -41,7 +42,7 @@ margin: 10px;
 }
 
 #form-title{
-    color: #fff;
+    color: black;
     
 }
 
