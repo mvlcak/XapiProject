@@ -17,16 +17,10 @@
     </div>
     <div class="row">
         <div class="col">
-
-        </div>
-        <div class="col">
-
-        </div>
-        <div class="col">
             <h3>Last activities</h3>
-            <ul >
+            <ul class="backgroundWhite" >
           {% for activity in lastActivities %}
-                <li style="background: white;">
+                <li>
                     <a href="{% url 'detailPerson' activity.person.id %}">{{activity.actor}}</a>
                     {{activity.verb}}
                     {{activity.object}}
@@ -34,6 +28,12 @@
                 </li>
             {% endfor %}
               </ul>
+        </div>
+        <div class="col">
+
+        </div>
+        <div class="col">
+           
      </div>
     </div> 
  </div>
