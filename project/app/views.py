@@ -69,7 +69,8 @@ def mainPage(request):
 							  Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=1)).count()])
 	(datetime.datetime.now() - datetime.timedelta(days=7)).date()
 	return render(request, 'app/main.html',{'activityCount':activityCount,'personCount':personCount,
-				  'lastActivities':lastActivities,'personsInteractions':personsInteractions,'activitiesInteractions':activitiesInteractions,'lastDays':lastDays})
+				  'lastActivities':lastActivities,'personsInteractions':personsInteractions,
+				  'activitiesInteractions':activitiesInteractions,'lastDays':lastDays})
 
 @login_required(login_url='loginIn')
 def activitiesPage(request):
@@ -88,9 +89,17 @@ def index(request):
 @login_required(login_url='loginIn')
 def detailPerson(request, person_id):
 	lastActivities=Activity.objects.filter(person=person_id)[::-1][:5]
-    
+	activities=Activity.objects.filter(person=person_id).distinct()
+	activitiesInteractions=[]
+	myset=set()
+	for act in activities:
+		myset.add(act.verb)
+	for act in myset:
+		activitiesInteractions.append([act,Activity.objects.filter(verb=act).count()])
+	activitiesInteractions=sorted(activitiesInteractions, key=itemgetter(1))[::-1][:10]
 	person = get_object_or_404(Person, pk=person_id)
-	return render(request, 'app/personDetail.html', {'person': person,'lastActivities':lastActivities})
+	return render(request, 'app/personDetail.html', {'person': person,'lastActivities':lastActivities,
+				  'activitiesInteractions':activitiesInteractions,})
 
 @login_required(login_url='loginIn')
 def detailActivity(request, activity_id):
