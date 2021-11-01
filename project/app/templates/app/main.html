@@ -3,51 +3,49 @@
    
     {%  include 'app/navbar.html' %}
     <div class="container">
+ 
   <div class="row">
-    <div class="col">
-     <h3> Persons:</h3>
+    <div class="col backgroundWhite">
+      <h3>Persons:</h3> 
+      <canvas id="bar-chart4" width="33%" height="33%" ></canvas>
     </div>
-    <div class="col">
+    <div class="col backgroundWhite">
+      <h3> Activities:</h3>
       <h3>
-     {{personCount}}
-     </h3>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col">
-      <h3>Activities:</h3>
-    </div>
-    <div class="col">
-      <h3>{{activityCount}}</h3>
+        <canvas id="bar-chart5" width="33%" height="33%" ></canvas>
+        </h3>
      </div>
+     <div class="col backgroundWhite">
+     <h3>Last activities</h3>
+     <ul >
+    {% for activity in lastActivities %}
+          <li >
+              <a href="{% url 'detailPerson' activity.person.id %}">{{activity.actor}}</a>
+              {{activity.verb}}
+              {{activity.object}}
+              {{activity.timestamp}}
+          </li>
+      {% endfor %}
+     </ul>
+     </div>   
   </div>
-  <div class="row">
-    <div class="col">
+  <div class="row ">
+    <div class="col backgroundWhite">
       <div>
-        <canvas id="bar-chart" width="33%" height="33%"></canvas>
+        <canvas id="bar-chart" width="33%" height="33%" ></canvas>
       </div>
     </div>
-    <div class="col">
-      <canvas id="line-chart"  width="33%" height="33%"></canvas>
+    <div class="col backgroundWhite">
+      <canvas id="line-chart"  width="33%" height="33%" ></canvas>
     </div>
-    <div class="col">
-      <canvas id="bar-chart3" width="33%" height="33%"></canvas>
+    <div class="col backgroundWhite">
+      <canvas id="bar-chart3" width="33%" height="33%" ></canvas>
     </div>
   </div>
 </div>
 <div class="row">
-  <div class="col" id="id1">
-    <h3>Last activities</h3>
+  <div class="col">
    
-  {% for activity in lastActivities %}
-        
-            <a href="{% url 'detailPerson' activity.person.id %}">{{activity.actor}}</a>
-            {{activity.verb}}
-            {{activity.object}}
-            {{activity.timestamp}}
-        <br>
-    {% endfor %}
-      
    
   </div>
  
@@ -77,11 +75,11 @@
       new Chart(document.getElementById("line-chart"), {
         type: 'line',
         data: {
-          labels: [{% for day in last7 %}"{{day.0}}", {% endfor %}],
+          labels: [{% for day in lastDays %}"{{day.0}}", {% endfor %}],
           datasets: [{ 
-              data: [{% for day in last7 %}"{{day.1}}", {% endfor %}],
+              data: [{% for day in lastDays %}"{{day.1}}", {% endfor %}],
               label: "Interactions",
-              borderColor: "#3e95cd",
+              borderColor: "#c45850",
               fill: false
             }
           ]
@@ -113,6 +111,47 @@
             }
           }
       });
+      new Chart(document.getElementById("bar-chart4"), {
+          type: 'bar',
+          data: {
+            labels:  ["Persons", ],
+            datasets: [
+              {
+                label: "Interactions",
+                backgroundColor: ["#c45850",  ],
+                data: [ {{personCount}} , ]
+              }
+            ]
+          },
+          options: {
+            legend: { display: false },
+            title: {
+              display: true,
+              text: ''
+            }
+          }
+      });
+      new Chart(document.getElementById("bar-chart5"), {
+          type: 'bar',
+          data: {
+            labels:  ["Activities", ],
+            datasets: [
+              {
+                label: "Interactions",
+                backgroundColor: ["#c45850",  ],
+                data: [ {{activityCount}} , ]
+              }
+            ]
+          },
+          options: {
+            legend: { display: false },
+            title: {
+              display: true,
+              text: ''
+            }
+          }
+      });
+      
     </script>
 </body>
 </html>
