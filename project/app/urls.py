@@ -4,7 +4,7 @@ from . import views
 
 urlpatterns = [
     # ex: /app/
-    path('', views.index, name='index'),
+    path('', views.mainPage, name='main'),
     # ex: /activity/id/
     path('activity/<int:activity_id>/', views.detailActivity, name='detailActivity'),
      # ex: /person/id/
