@@ -2,8 +2,7 @@
 <body>
    
     {%  include 'app/navbar.html' %}
-    <div class="container">
- 
+<div class="container">
   <div class="row">
     <div class="col backgroundWhite">
       <h3>Persons:</h3> 
@@ -11,11 +10,9 @@
     </div>
     <div class="col backgroundWhite">
       <h3> Activities:</h3>
-      <h3>
-        <canvas id="bar-chart5" width="33%" height="33%" ></canvas>
-        </h3>
-     </div>
-     <div class="col backgroundWhite">
+      <canvas id="bar-chart5" width="33%" height="33%" ></canvas>
+    </div>
+    <div class="col backgroundWhite">
      <h3>Last activities</h3>
      <ul >
     {% for activity in lastActivities %}
@@ -27,13 +24,11 @@
           </li>
       {% endfor %}
      </ul>
-     </div>   
+    </div>   
   </div>
   <div class="row ">
     <div class="col backgroundWhite">
-      <div>
-        <canvas id="bar-chart" width="33%" height="33%" ></canvas>
-      </div>
+      <canvas id="bar-chart" width="33%" height="33%" ></canvas>
     </div>
     <div class="col backgroundWhite">
       <canvas id="line-chart"  width="33%" height="33%" ></canvas>
@@ -43,14 +38,7 @@
     </div>
   </div>
 </div>
-<div class="row">
-  <div class="col">
-   
-   
-  </div>
- 
-</div>
-    <script>
+<script>
       new Chart(document.getElementById("bar-chart"), {
           type: 'bar',
           data: {
