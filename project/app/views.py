@@ -154,4 +154,8 @@ def loadDb(request):
 		if not activities:
 			act.save()
 	return redirect('main')		
-		
+
+def search_persons(request):
+	searched=request.POST.get('name')
+	persons=Person.objects.filter(person_name__contains=searched)
+	return render(request, 'app/persons.html',{'persons':persons}) 		

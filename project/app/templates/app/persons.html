@@ -1,7 +1,14 @@
 {%  include 'app/head.html' %}
 <body>
     {%  include 'app/navbar.html' %}
-    
+    <form action="{% url 'search_persons' %}" method="post" class="form-example">
+        <div class="form-example">
+            <input type="text" name="name" id="name" required>
+            <input type="submit" value="Search">
+            {% csrf_token %}
+        </div>
+        
+    </form>
     {% for person in persons%}
        <div class="item">
            <a href="{% url 'detailPerson' person.id %}">{{ person.person_name }}</a>
