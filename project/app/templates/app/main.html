@@ -31,7 +31,7 @@
       <canvas id="bar-chart" width="33%" height="33%" ></canvas>
     </div>
     <div class="col backgroundWhite">
-      <canvas id="line-chart"  width="33%" height="33%" ></canvas>
+      <canvas id="bar-chart6" width="33%" height="33%" ></canvas>
     </div>
     <div class="col backgroundWhite">
       <canvas id="bar-chart3" width="33%" height="33%" ></canvas>
@@ -139,7 +139,26 @@
             }
           }
       });
-      
+      new Chart(document.getElementById("bar-chart6"), {
+          type: 'bar',
+          data: {
+            labels:  [{% for act in objectsInteractions %}"{{act.0}}", {% endfor %}],
+            datasets: [
+              {
+                label: "Interactions",
+                backgroundColor: [{% for act in objectsInteractions %}"#c45850", {% endfor %} ],
+                data: [{% for act in objectsInteractions %} {{act.1}} , {% endfor %}]
+              }
+            ]
+          },
+          options: {
+            legend: { display: false },
+            title: {
+              display: true,
+              text: 'Predicted world population (millions) in 2050'
+            }
+          }
+      });
     </script>
 </body>
 </html>
