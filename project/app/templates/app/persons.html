@@ -1,11 +1,13 @@
 {%  include 'app/head.html' %}
 <body>
     {%  include 'app/navbar.html' %}
-    <ul>
+    
     {% for person in persons%}
-       <li><a href="{% url 'detailPerson' person.id %}">{{ person.person_name }}</a><li>
+       <div class="item">
+           <a href="{% url 'detailPerson' person.id %}">{{ person.person_name }}</a>
+       </div>
     {% endfor %}
-    </ul>
+    
   
 </body>
 </html>

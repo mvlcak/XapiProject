@@ -1,15 +1,15 @@
 {%  include 'app/head.html' %}
 <body>
     {%  include 'app/navbar.html' %}
-    <ul>
+    
     {% for activity in activityList %}
-        <li>
+        <div class="item">
             <a href="{% url 'detailPerson' activity.person.id %}">{{activity.actor}}</a>
             {{activity.verb}}
             {{activity.object}}
             {{activity.timestamp}}
-        </li>
+        </div>
     {% endfor %}
-    </ul>
+    
 </body>
 </html>
