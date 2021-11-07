@@ -7,6 +7,36 @@ html {
     background: linear-gradient(to right, hsl(212, 80%, 63%), rgb(58, 238, 199));
     font-family: sans-serif;
 }
+form.form-search {
+    margin-top: auto;
+    margin-bottom: auto;
+    display: table;
+    justify-content: center;
+}
+.form-search {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: auto;
+    display: table;
+    justify-content: center;
+}
+div.form-search {
+    display: table-row;
+}
+
+label, input {
+    display: table-cell;
+    margin-bottom: 10px;
+}
+.text{
+    min-width: 600px;
+}
+.count{
+    margin-top: auto;
+    margin-bottom: auto;
+    position: relative;
+    font-size: 100px;
+}
 .item{
     background: linear-gradient(to right, hsl(0, 0%, 100%), rgb(173, 173, 173));
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
