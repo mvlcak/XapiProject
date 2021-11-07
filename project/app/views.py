@@ -12,7 +12,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from operator import itemgetter
 import requests,json
 from datetime import date
-import datetime
+import datetime, urllib
 
 def registerPage(request):
 	if request.user.is_authenticated:
@@ -165,7 +165,48 @@ def loadDb(request):
 			act.save()
 	return redirect('main')		
 
+@login_required(login_url='loginIn')
 def search_persons(request):
 	searched=request.POST.get('name')
 	persons=Person.objects.filter(person_name__contains=searched)
 	return render(request, 'app/persons.html',{'persons':persons}) 		
+
+@login_required(login_url='loginIn')
+def coursesPage(request):
+	response = urllib.request.urlopen('http://localhost/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_course_get_courses_by_field&value=&moodlewsrestformat=json')
+	text = response.read()
+	text=json.loads(text.decode('utf-8'))
+	courses_list=[]
+	for course in text['courses'] :
+			courses_list.append([course['id'],course['fullname']])
+	page = request.GET.get('page', 1)
+	paginator = Paginator(courses_list, 10)
+	try:
+		courses = paginator.page(page)
+	except PageNotAnInteger:
+		courses = paginator.page(1)
+	except EmptyPage:
+		courses= paginator.page(paginator.num_pages)
+
+	return render(request, 'app/courses.html',{'courses':courses}) 
+
+@login_required(login_url='loginIn')
+def detailCourse(request, person_id):
+	lastActivities=Activity.objects.filter(person=person_id)[::-1][:5]
+	activities=Activity.objects.filter(person=person_id).distinct()
+	activitiesInteractions=[]
+	myset=set()
+	for act in activities:
+		myset.add(act.verb)
+	for act in myset:
+		activitiesInteractions.append([act,Activity.objects.filter(verb=act).count()])
+	activitiesInteractions=sorted(activitiesInteractions, key=itemgetter(1))[::-1][:10]
+	person = get_object_or_404(Person, pk=person_id)
+	return render(request, 'app/personDetail.html', {'person': person,'lastActivities':lastActivities,
+				  'activitiesInteractions':activitiesInteractions,})
+
+@login_required(login_url='loginIn')
+def search_courses(request):
+	searched=request.POST.get('name')
+	persons=Person.objects.filter(person_name__contains=searched)
+	return render(request, 'app/persons.html',{'persons':persons}) 						  
