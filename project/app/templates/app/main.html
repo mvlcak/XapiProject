@@ -6,11 +6,11 @@
   <div class="row">
     <div class="col backgroundWhite">
       <h3>Persons:</h3> 
-      <canvas id="bar-chart4" width="33%" height="33%" ></canvas>
+      <div class="count">{{personCount}}</div>
     </div>
     <div class="col backgroundWhite">
       <h3> Activities:</h3>
-      <canvas id="bar-chart5" width="33%" height="33%" ></canvas>
+      <div class="count">{{activityCount}}</div>
     </div>
     <div class="col backgroundWhite">
      <h3>Last activities</h3>
@@ -96,46 +96,6 @@
             title: {
               display: true,
               text: 'Predicted world population (millions) in 2050'
-            }
-          }
-      });
-      new Chart(document.getElementById("bar-chart4"), {
-          type: 'bar',
-          data: {
-            labels:  ["Persons", ],
-            datasets: [
-              {
-                label: "Interactions",
-                backgroundColor: ["#c45850",  ],
-                data: [ {{personCount}} , ]
-              }
-            ]
-          },
-          options: {
-            legend: { display: false },
-            title: {
-              display: true,
-              text: ''
-            }
-          }
-      });
-      new Chart(document.getElementById("bar-chart5"), {
-          type: 'bar',
-          data: {
-            labels:  ["Activities", ],
-            datasets: [
-              {
-                label: "Interactions",
-                backgroundColor: ["#c45850",  ],
-                data: [ {{activityCount}} , ]
-              }
-            ]
-          },
-          options: {
-            legend: { display: false },
-            title: {
-              display: true,
-              text: ''
             }
           }
       });
