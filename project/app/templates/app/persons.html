@@ -1,13 +1,12 @@
 {%  include 'app/head.html' %}
 <body>
     {%  include 'app/navbar.html' %}
-    <form action="{% url 'search_persons' %}" method="post" class="form-example">
-        <div class="form-example">
-            <input type="text" name="name" id="name" required>
+    <form action="{% url 'search_persons' %}" method="post" class="form-search">
+        <div class="form-search">
+            <input type="text" name="name" id="name" class="text" required>
             <input type="submit" value="Search">
             {% csrf_token %}
         </div>
-        
     </form>
     {% for person in persons%}
        <div class="item">
@@ -15,6 +14,26 @@
        </div>
     {% endfor %}
     
-  
+    {% if persons.has_other_pages %}
+    <ul class="pagination">
+      {% if persons.has_previous %}
+        <li><a href="?page={{ persons.previous_page_number }}">&laquo;</a></li>
+      {% else %}
+        <li class="disabled"><span>&laquo;</span></li>
+      {% endif %}
+      {% for i in persons.paginator.page_range %}
+        {% if persons.number == i %}
+          <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+        {% else %}
+          <li><a href="?page={{ i }}">{{ i }}</a></li>
+        {% endif %}
+      {% endfor %}
+      {% if persons.has_next %}
+        <li><a href="?page={{ persons.next_page_number }}">&raquo;</a></li>
+      {% else %}
+        <li class="disabled"><span>&raquo;</span></li>
+      {% endif %}
+    </ul>
+  {% endif %}
 </body>
 </html>

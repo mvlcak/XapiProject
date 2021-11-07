@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate, authenticate, login, logout
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from operator import itemgetter
 import requests,json
@@ -31,7 +32,7 @@ def logoutUser(request):
 def mainPage(request):
 	activityCount=Activity.objects.count()
 	personCount=Person.objects.count()
-	lastActivities=Activity.objects.all()[::-1][:7]
+	lastActivities=Activity.objects.all()[::-1][:5]
 	persons=Person.objects.all()
 	personsInteractions=[]
 	for pers in persons:
@@ -88,7 +89,16 @@ def activitiesPage(request):
 
 @login_required(login_url='loginIn')
 def personsPage(request):
-	persons=Person.objects.all
+	person_list = Person.objects.all()
+	page = request.GET.get('page', 1)
+	paginator = Paginator(person_list, 10)
+	try:
+		persons = paginator.page(page)
+	except PageNotAnInteger:
+		persons = paginator.page(1)
+	except EmptyPage:
+		persons= paginator.page(paginator.num_pages)
+
 	return render(request, 'app/persons.html',{'persons':persons})        
 
 @login_required(login_url='loginIn')
