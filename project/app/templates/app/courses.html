@@ -10,7 +10,7 @@
     </form>
     {% for course in courses%}
        <div class="item">
-           <a href="{% url 'detailCourse' course.id %}">{{ course.course_name }}</a>
+           <a href="{% url 'detailCourse' course.0 %}">{{ course.1 }}</a>
        </div>
     {% endfor %}
     

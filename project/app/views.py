@@ -10,9 +10,10 @@ from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from operator import itemgetter
-import requests,json
 from datetime import date
-import datetime, urllib
+import requests
+import json
+import datetime
 
 def registerPage(request):
 	if request.user.is_authenticated:
@@ -173,9 +174,8 @@ def search_persons(request):
 
 @login_required(login_url='loginIn')
 def coursesPage(request):
-	response = urllib.request.urlopen('http://localhost/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_course_get_courses_by_field&value=&moodlewsrestformat=json')
-	text = response.read()
-	text=json.loads(text.decode('utf-8'))
+	response = requests.get('http://host.docker.internal/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_course_get_courses_by_field&value=&moodlewsrestformat=json')
+	text = json.loads(response.text)
 	courses_list=[]
 	for course in text['courses'] :
 			courses_list.append([course['id'],course['fullname']])
