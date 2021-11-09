@@ -1,7 +1,7 @@
 {%  include 'app/head.html' %}
 <body>
     {%  include 'app/navbar.html' %}
-    <h2>{{ person.person_name }}</h2>
+    <div class="heading">{{ person.person_name }}</div>
     <div class="container">
        <div class="row">
            <div class="col backgroundWhite">
@@ -11,7 +11,7 @@
 
            </div>
            <div class="col backgroundWhite">
-            <canvas id="bar-chart3" width="33%" height="33%" ></canvas>
+           
         </div>
        </div> 
     
@@ -30,16 +30,36 @@
               </ul>
         </div>
         <div class="col backgroundWhite">
-
+          <canvas id="bar-chart3" width="33%" height="33%" ></canvas>
         </div>
         <div class="col backgroundWhite">
-           
+          <canvas id="bar-chart6" width="33%" height="33%" ></canvas>
      </div>
     </div> 
  </div>
 </div>
 </body>
 <script>
+  new Chart(document.getElementById("bar-chart6"), {
+          type: 'bar',
+          data: {
+            labels:  [{% for act in objectsInteractions %}"{{act.0}}", {% endfor %}],
+            datasets: [
+              {
+                label: "Interactions",
+                backgroundColor: [{% for act in objectsInteractions %}"#c45850", {% endfor %} ],
+                data: [{% for act in objectsInteractions %} {{act.1}} , {% endfor %}]
+              }
+            ]
+          },
+          options: {
+            legend: { display: false },
+            title: {
+              display: true,
+              text: 'Predicted world population (millions) in 2050'
+            }
+          }
+      });
    new Chart(document.getElementById("bar-chart3"), {
           type: 'bar',
           data: {

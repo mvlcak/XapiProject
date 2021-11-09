@@ -1,7 +1,7 @@
 {%  include 'app/head.html' %}
 <body>
     {%  include 'app/navbar.html' %}
-    <h2>{{ course }}</h2>
+    <div class="heading">{{ course }}</div>
     <div class="container">
        <div class="row">
            <div class="col backgroundWhite">
@@ -36,7 +36,7 @@
             {% endif %}    
            </div>
            <div class="col backgroundWhite">
-
+            
            </div>
            <div class="col backgroundWhite">
            
@@ -46,15 +46,66 @@
     <div class="row">
         <div class="col backgroundWhite">
             <h3>Last activities</h3>
-            
+            <ul >
+                {% for activity in lastActivities %}
+                      <li>
+                          <a href="{% url 'detailPerson' activity.person.id %}">{{activity.actor}}</a>
+                          {{activity.verb}}
+                          {{activity.object}}
+                          {{activity.timestamp}}
+                      </li>
+                  {% endfor %}
+                    </ul>
         </div>
         <div class="col backgroundWhite">
-
+            <canvas id="bar-chart" width="33%" height="33%" ></canvas>
         </div>
         <div class="col backgroundWhite">
-           
+            <canvas id="bar-chart3" width="33%" height="33%" ></canvas>
      </div>
     </div> 
  </div>
 </div>
+<script>
+    new Chart(document.getElementById("bar-chart"), {
+        type: 'bar',
+        data: {
+          labels:  [{% for pers in personsInteractions %}"{{pers.0}}", {% endfor %}],
+          datasets: [
+            {
+              label: "Interactions",
+              backgroundColor: [{% for pers in personsInteractions %}"#c45850", {% endfor %} ],
+              data: [{% for pers in personsInteractions %} {{pers.1}} , {% endfor %}]
+            }
+          ]
+        },
+        options: {
+          legend: { display: false },
+          title: {
+            display: true,
+            text: ''
+          }
+        }
+    });
+    new Chart(document.getElementById("bar-chart3"), {
+          type: 'bar',
+          data: {
+            labels:  [{% for act in activitiesInteractions %}"{{act.0}}", {% endfor %}],
+            datasets: [
+              {
+                label: "Interactions",
+                backgroundColor: [{% for act in activitiesInteractions %}"#c45850", {% endfor %} ],
+                data: [{% for act in activitiesInteractions %} {{act.1}} , {% endfor %}]
+              }
+            ]
+          },
+          options: {
+            legend: { display: false },
+            title: {
+              display: true,
+              text: 'Predicted world population (millions) in 2050'
+            }
+          }
+      });
+   </script> 
 </body>

@@ -13,6 +13,16 @@ form.form-search {
     display: table;
     justify-content: center;
 }
+.heading{
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 40px;
+    text-align: center;
+}
+.center{
+    display: flex;
+    align-items: center;
+}
 .form-search {
     margin-left: auto;
     margin-right: auto;

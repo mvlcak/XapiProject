@@ -1,6 +1,7 @@
 {%  include 'app/head.html' %}
 <body>
     {%  include 'app/navbar.html' %}
+    <div class="heading">Persons</div>
     <form action="{% url 'search_persons' %}" method="post" class="form-search">
         <div class="form-search">
             <input type="text" name="name" id="name" class="text" required>

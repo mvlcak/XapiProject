@@ -1,7 +1,7 @@
 {%  include 'app/head.html' %}
 <body>
     {%  include 'app/navbar.html' %}
-    
+    <div class="heading">Activities</div>
     {% for activity in activityList %}
         <div class="item">
             <a href="{% url 'detailPerson' activity.person.id %}">{{activity.actor}}</a>
@@ -10,6 +10,7 @@
             {{activity.timestamp}}
         </div>
     {% endfor %}
+    <div class="center">
     {% if activityList.has_other_pages %}
                 <ul class="pagination">
                 {% if activityList.has_previous %}
@@ -31,5 +32,6 @@
                 {% endif %}
                 </ul>
             {% endif %}    
+    </div>      
 </body>
 </html>
