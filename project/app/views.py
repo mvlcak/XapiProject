@@ -86,6 +86,14 @@ def mainPage(request):
 @login_required(login_url='loginIn')
 def activitiesPage(request):
 	activityList=Activity.objects.all()[::-1]
+	page = request.GET.get('page', 1)	
+	paginator = Paginator(activityList, 20)
+	try:
+		activityList = paginator.page(page)
+	except PageNotAnInteger:
+		activityList = paginator.page(1)
+	except EmptyPage:
+		activityList= paginator.page(paginator.num_pages)
 	return render(request, 'app/activities.html', {'activityList':activityList})  
 
 @login_required(login_url='loginIn')
@@ -191,19 +199,24 @@ def coursesPage(request):
 	return render(request, 'app/courses.html',{'courses':courses}) 
 
 @login_required(login_url='loginIn')
-def detailCourse(request, person_id):
-	lastActivities=Activity.objects.filter(person=person_id)[::-1][:5]
-	activities=Activity.objects.filter(person=person_id).distinct()
-	activitiesInteractions=[]
-	myset=set()
-	for act in activities:
-		myset.add(act.verb)
-	for act in myset:
-		activitiesInteractions.append([act,Activity.objects.filter(verb=act).count()])
-	activitiesInteractions=sorted(activitiesInteractions, key=itemgetter(1))[::-1][:10]
-	person = get_object_or_404(Person, pk=person_id)
-	return render(request, 'app/personDetail.html', {'person': person,'lastActivities':lastActivities,
-				  'activitiesInteractions':activitiesInteractions,})
+def detailCourse(request, course_id):
+	response = requests.get('http://host.docker.internal/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_course_get_courses&options[ids][0]='+str(course_id)+'&moodlewsrestformat=json')
+	text = json.loads(response.text)
+	course=text[0]['fullname']
+	responseEnrolled = requests.get('http://host.docker.internal/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_enrol_get_enrolled_users&courseid='+str(course_id)+'&moodlewsrestformat=json')
+	textEnrolled = json.loads(responseEnrolled.text)
+	enrolledPersons=[]
+	for person in textEnrolled:
+		enrolledPersons.append(person['fullname'])
+	page = request.GET.get('page', 1)	
+	paginator = Paginator(enrolledPersons, 10)
+	try:
+		persons = paginator.page(page)
+	except PageNotAnInteger:
+		persons = paginator.page(1)
+	except EmptyPage:
+		persons= paginator.page(paginator.num_pages)
+	return render(request, 'app/courseDetail.html',{'course':course,'persons':persons})
 
 @login_required(login_url='loginIn')
 def search_courses(request):
