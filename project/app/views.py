@@ -125,9 +125,16 @@ def detailPerson(request, person_id):
 	for act in myset:
 		activitiesInteractions.append([act,Activity.objects.filter(verb=act).count()])
 	activitiesInteractions=sorted(activitiesInteractions, key=itemgetter(1))[::-1][:10]
+	objectsInteractions=[]
+	mysetObjects=set()
+	for act in activities:
+		mysetObjects.add(act.object)
+	for act in mysetObjects:
+		objectsInteractions.append([act,Activity.objects.filter(object=act).count()])
+	objectsInteractions=sorted(objectsInteractions, key=itemgetter(1))[::-1][:10]
 	person = get_object_or_404(Person, pk=person_id)
 	return render(request, 'app/personDetail.html', {'person': person,'lastActivities':lastActivities,
-				  'activitiesInteractions':activitiesInteractions,})
+				  'activitiesInteractions':activitiesInteractions,'objectsInteractions':objectsInteractions})
 
 @login_required(login_url='loginIn')
 def detailActivity(request, activity_id):
@@ -203,11 +210,25 @@ def detailCourse(request, course_id):
 	response = requests.get('http://host.docker.internal/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_course_get_courses&options[ids][0]='+str(course_id)+'&moodlewsrestformat=json')
 	text = json.loads(response.text)
 	course=text[0]['fullname']
+	lastActivities=Activity.objects.filter(object=course)[::-1][:5]
 	responseEnrolled = requests.get('http://host.docker.internal/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_enrol_get_enrolled_users&courseid='+str(course_id)+'&moodlewsrestformat=json')
 	textEnrolled = json.loads(responseEnrolled.text)
+	persons=Person.objects.all()
+	personsInteractions=[]
+	for pers in persons:
+		personsInteractions.append([pers.person_name,Activity.objects.filter(person=pers,object=course).count()])
+	personsInteractions=sorted(personsInteractions, key=itemgetter(1))[::-1][:5]
+	activitiesInteractions=[]
+	activities=Activity.objects.distinct()
+	myset=set()
+	for act in activities:
+		myset.add(act.verb)
+	for act in myset:
+		activitiesInteractions.append([act,Activity.objects.filter(verb=act).count()])
+	activitiesInteractions=sorted(activitiesInteractions, key=itemgetter(1))[::-1][:10]
 	enrolledPersons=[]
-	for person in textEnrolled:
-		enrolledPersons.append(person['fullname'])
+	for pers in textEnrolled:
+		enrolledPersons.append(pers['fullname'])
 	page = request.GET.get('page', 1)	
 	paginator = Paginator(enrolledPersons, 10)
 	try:
@@ -216,7 +237,8 @@ def detailCourse(request, course_id):
 		persons = paginator.page(1)
 	except EmptyPage:
 		persons= paginator.page(paginator.num_pages)
-	return render(request, 'app/courseDetail.html',{'course':course,'persons':persons})
+	return render(request, 'app/courseDetail.html',{'course':course,'persons':persons,'lastActivities':lastActivities
+				  ,'personsInteractions':personsInteractions,'activitiesInteractions':activitiesInteractions})	
 
 @login_required(login_url='loginIn')
 def search_courses(request):
