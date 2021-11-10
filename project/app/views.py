@@ -116,6 +116,7 @@ def index(request):
 
 @login_required(login_url='loginIn')
 def detailPerson(request, person_id):
+	person = get_object_or_404(Person, pk=person_id)
 	lastActivities=Activity.objects.filter(person=person_id)[::-1][:5]
 	activities=Activity.objects.filter(person=person_id).distinct()
 	activitiesInteractions=[]
@@ -132,9 +133,13 @@ def detailPerson(request, person_id):
 	for act in mysetObjects:
 		objectsInteractions.append([act,Activity.objects.filter(object=act).count()])
 	objectsInteractions=sorted(objectsInteractions, key=itemgetter(1))[::-1][:10]
-	person = get_object_or_404(Person, pk=person_id)
+	response = requests.get('http://localhost/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_enrol_get_users_courses&userid='+person.id_lms+'&moodlewsrestformat=json')
+	courses = json.loads(response.text)
+	coursesList=[]
+	for course in courses:
+		coursesList.append(course['fullname'])
 	return render(request, 'app/personDetail.html', {'person': person,'lastActivities':lastActivities,
-				  'activitiesInteractions':activitiesInteractions,'objectsInteractions':objectsInteractions})
+				  'activitiesInteractions':activitiesInteractions,'objectsInteractions':objectsInteractions,'coursesList':coursesList})
 
 @login_required(login_url='loginIn')
 def detailActivity(request, activity_id):
@@ -165,7 +170,8 @@ def loadDb(request):
 	text = json.loads(response.text)
 	for activity in text:
 		if not Person.objects.filter(person_name=activity['actor']['name']):
-			person=Person(person_name=activity['actor']['name'])
+			person=Person(id_lms=activity['actor']['account']['name'],person_name=activity['actor']['name'])
+			
 			person.save()
 		else: 
 			person=Person.objects.get(person_name=activity['actor']['name'])

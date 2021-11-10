@@ -4,6 +4,7 @@ import datetime
 
 
 class Person(models.Model):
+    id_lms=models.CharField(max_length=200)
     person_name = models.CharField(max_length=200)
     
     def __str__(self):
