@@ -15,6 +15,7 @@ import requests
 import json
 import datetime
 
+
 def registerPage(request):
 	if request.user.is_authenticated:
 		return redirect('main')
@@ -133,7 +134,7 @@ def detailPerson(request, person_id):
 	for act in mysetObjects:
 		objectsInteractions.append([act,Activity.objects.filter(object=act).count()])
 	objectsInteractions=sorted(objectsInteractions, key=itemgetter(1))[::-1][:10]
-	response = requests.get('http://localhost/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_enrol_get_users_courses&userid='+person.id_lms+'&moodlewsrestformat=json')
+	response = requests.get('http://host.docker.internal/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_enrol_get_users_courses&userid='+person.id_lms+'&moodlewsrestformat=json')
 	courses = json.loads(response.text)
 	coursesList=[]
 	for course in courses:
@@ -221,8 +222,11 @@ def detailCourse(request, course_id):
 	textEnrolled = json.loads(responseEnrolled.text)
 	persons=Person.objects.all()
 	personsInteractions=[]
+	df = pd.DataFrame( columns=['person_name', 'interactions'])
 	for pers in persons:
+		df.append(pers.person_name,Activity.objects.filter(person=pers,object=course).count())
 		personsInteractions.append([pers.person_name,Activity.objects.filter(person=pers,object=course).count()])
+	
 	personsInteractions=sorted(personsInteractions, key=itemgetter(1))[::-1][:5]
 	activitiesInteractions=[]
 	activities=Activity.objects.distinct()
