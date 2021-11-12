@@ -232,7 +232,11 @@ def detailCourse(request, course_id):
 	if len(df.index)>5:
 		X = df[[ 'interactions']]
 		kmeans = KMeans(random_state=5).fit(X)
-	
+		clusteredPersons=[]
+		for person in kmeans.labels_:
+    			clusteredPersons.append(df.loc[i,'name'],person)
+	else:
+		clusteredPersons=0
 	personsInteractions=sorted(personsInteractions, key=itemgetter(1))[::-1][:5]
 	activitiesInteractions=[]
 	activities=Activity.objects.distinct()
@@ -255,7 +259,7 @@ def detailCourse(request, course_id):
 		persons= paginator.page(paginator.num_pages)
 	
 	return render(request, 'app/courseDetail.html',{'course':course,'persons':persons,'lastActivities':lastActivities
-				  ,'personsInteractions':personsInteractions,'activitiesInteractions':activitiesInteractions})	
+				  ,'personsInteractions':personsInteractions,'activitiesInteractions':activitiesInteractions,'clusteredPersons':clusteredPersons})	
 
 @login_required(login_url='loginIn')
 def search_courses(request):

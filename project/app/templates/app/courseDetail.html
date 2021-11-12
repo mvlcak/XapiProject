@@ -36,7 +36,13 @@
             {% endif %}    
            </div>
            <div class="col backgroundWhite">
-            
+            {%if clusteredPersons != 0%}
+              <ul>
+                {% for person in clusteredPersons%}
+                  <li>{{person.0}} - {{person.1}}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
            </div>
            <div class="col backgroundWhite">
            
