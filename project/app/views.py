@@ -14,6 +14,9 @@ from datetime import date
 import requests
 import json
 import datetime
+import pandas as pd
+from sklearn.cluster import KMeans
+
 
 
 def registerPage(request):
@@ -221,11 +224,14 @@ def detailCourse(request, course_id):
 	responseEnrolled = requests.get('http://host.docker.internal/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_enrol_get_enrolled_users&courseid='+str(course_id)+'&moodlewsrestformat=json')
 	textEnrolled = json.loads(responseEnrolled.text)
 	persons=Person.objects.all()
+	df=pd.DataFrame(columns=['name', 'interactions'])
 	personsInteractions=[]
-	df = pd.DataFrame( columns=['person_name', 'interactions'])
 	for pers in persons:
-		df.append(pers.person_name,Activity.objects.filter(person=pers,object=course).count())
+		df=df.append({'name': pers.person_name,'interactions':Activity.objects.filter(person=pers,object=course).count()}, ignore_index=True)
 		personsInteractions.append([pers.person_name,Activity.objects.filter(person=pers,object=course).count()])
+	if len(df.index)>5:
+		X = df[[ 'interactions']]
+		kmeans = KMeans(random_state=5).fit(X)
 	
 	personsInteractions=sorted(personsInteractions, key=itemgetter(1))[::-1][:5]
 	activitiesInteractions=[]
@@ -247,6 +253,7 @@ def detailCourse(request, course_id):
 		persons = paginator.page(1)
 	except EmptyPage:
 		persons= paginator.page(paginator.num_pages)
+	
 	return render(request, 'app/courseDetail.html',{'course':course,'persons':persons,'lastActivities':lastActivities
 				  ,'personsInteractions':personsInteractions,'activitiesInteractions':activitiesInteractions})	
 
