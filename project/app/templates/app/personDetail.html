@@ -15,11 +15,14 @@
             </ul>
            </div>
            <div class="col backgroundWhite">
-           
+            <canvas id="line-chart" width="33%" height="33%" ></canvas>
            </div>
            <div class="col backgroundWhite">
-           
-        </div>
+            {% for day in lastDays%}
+              {{day.0}}<br>
+              {{day.1}}
+            {% endfor %}
+           </div>
        </div> 
     
     <div class="row">
@@ -87,5 +90,24 @@
             }
           }
       });
+      new Chart(document.getElementById("line-chart"), {
+  type: 'line',
+  data: {
+    labels: [{% for day in lastDays %}"{{day.0}}", {% endfor %}],
+    datasets: [{ 
+        data: [{% for day in lastDays %} {{day.1}} , {% endfor %}],
+        label: "Interactions",
+        borderColor: "#c45850",
+        fill: false
+      }
+    ]
+  },
+  options: {
+    title: {
+      display: true,
+      text: 'World population per region (in millions)'
+    }
+  }
+});
     </script>
 </html>

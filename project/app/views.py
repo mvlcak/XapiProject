@@ -58,34 +58,10 @@ def mainPage(request):
 	for act in mysetObjects:
 		objectsInteractions.append([act,Activity.objects.filter(object=act).count()])
 	objectsInteractions=sorted(objectsInteractions, key=itemgetter(1))[::-1][:10]
-	lastDays=[]
-	for act in activities:
-		if act.timestamp[:10] == (date.today() - datetime.timedelta(days=7)):
-			lastDays.append([(datetime.datetime.now() - datetime.timedelta(days=7)).date(),
-							  Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=7)).count()])
-		if act.timestamp[:10] == date.today() - datetime.timedelta(days=6):
-			lastDays.append([(datetime.datetime.now() - datetime.timedelta(days=6)).date(),
-							  Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=6)).count()])
-		if act.timestamp[:10] == date.today() - datetime.timedelta(days=5):
-			lastDays.append([(datetime.datetime.now() - datetime.timedelta(days=5)).date(),
-							  Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=5)).count()])
-		if act.timestamp[:10] == date.today() - datetime.timedelta(days=4):
-			lastDays.append([(datetime.datetime.now() - datetime.timedelta(days=4)).date(),
-							  Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=4)).count()])
-		if act.timestamp[:10] == date.today() - datetime.timedelta(days=3):
-			lastDays.append([(datetime.datetime.now() - datetime.timedelta(days=3)).date(),
-							  Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=3)).count()])
-		if act.timestamp[:10] == date.today() - datetime.timedelta(days=2):
-			lastDays.append([(datetime.datetime.now() - datetime.timedelta(days=2)).date(),
-							  Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=2)).count()])
-		if act.timestamp[:10] == date.today() - datetime.timedelta(days=1):		
-			lastDays.append([(datetime.datetime.now() - datetime.timedelta(days=1)).date(),
-							  Activity.objects.filter(timestamp__contains=datetime.datetime.now() - datetime.timedelta(days=1)).count()])
-	(datetime.datetime.now() - datetime.timedelta(days=7)).date()
+	
 	return render(request, 'app/main.html',{'activityCount':activityCount,'personCount':personCount,
 				  'lastActivities':lastActivities,'personsInteractions':personsInteractions,
-				  'activitiesInteractions':activitiesInteractions, 'objectsInteractions':objectsInteractions,
-				  'lastDays':lastDays})
+				  'activitiesInteractions':activitiesInteractions, 'objectsInteractions':objectsInteractions,})
 
 @login_required(login_url='loginIn')
 def activitiesPage(request):
@@ -142,8 +118,24 @@ def detailPerson(request, person_id):
 	coursesList=[]
 	for course in courses:
 		coursesList.append(course['fullname'])
+	lastDays=[]
+	time7=datetime.datetime.now() - datetime.timedelta(days=7)
+	lastDays.append(["-7 days",Activity.objects.filter(timestamp__contains=time7.strftime('%Y-%m-%d')).filter(person=person_id).count()])
+	time6=datetime.datetime.now() - datetime.timedelta(days=6)
+	lastDays.append(["-6 days",Activity.objects.filter(timestamp__contains=time6.strftime('%Y-%m-%d')).filter(person=person_id).count()])
+	time5=datetime.datetime.now() - datetime.timedelta(days=5)
+	lastDays.append(["-5 days",Activity.objects.filter(timestamp__contains=time5.strftime('%Y-%m-%d')).filter(person=person_id).count()])
+	time4=datetime.datetime.now() - datetime.timedelta(days=4)
+	lastDays.append(["-4 days",Activity.objects.filter(timestamp__contains=time4.strftime('%Y-%m-%d')).filter(person=person_id).count()])
+	time3=datetime.datetime.now() - datetime.timedelta(days=3)
+	lastDays.append(["-3 days",Activity.objects.filter(timestamp__contains=time3.strftime('%Y-%m-%d')).filter(person=person_id).count()])
+	time2=datetime.datetime.now() - datetime.timedelta(days=2)
+	lastDays.append(["-2 days",Activity.objects.filter(timestamp__contains=time2.strftime('%Y-%m-%d')).filter(person=person_id).count()])
+	time=datetime.datetime.now() - datetime.timedelta(days=1)
+	lastDays.append(["-1 days",Activity.objects.filter(timestamp__contains=time.strftime('%Y-%m-%d')).filter(person=person_id).count()])
+	
 	return render(request, 'app/personDetail.html', {'person': person,'lastActivities':lastActivities,
-				  'activitiesInteractions':activitiesInteractions,'objectsInteractions':objectsInteractions,'coursesList':coursesList})
+				  'activitiesInteractions':activitiesInteractions,'objectsInteractions':objectsInteractions,'coursesList':coursesList,'lastDays':lastDays})
 
 @login_required(login_url='loginIn')
 def detailActivity(request, activity_id):
@@ -231,10 +223,12 @@ def detailCourse(request, course_id):
 		personsInteractions.append([pers.person_name,Activity.objects.filter(person=pers,object=course).count()])
 	if len(df.index)>5:
 		X = df[[ 'interactions']]
-		kmeans = KMeans(random_state=5).fit(X)
+		kmeans = KMeans(n_clusters=5).fit(X)
 		clusteredPersons=[]
+		i=0
 		for person in kmeans.labels_:
-    			clusteredPersons.append(df.loc[i,'name'],person)
+			clusteredPersons.append([df.loc[i,'name'],person+1])
+			i=i+1
 	else:
 		clusteredPersons=0
 	personsInteractions=sorted(personsInteractions, key=itemgetter(1))[::-1][:5]
