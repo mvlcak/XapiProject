@@ -7,27 +7,27 @@
            <div class="col backgroundWhite">
             <h3>Enrolled Users</h3>
              <ul>
-            {% for person in persons %}
+            {% for person in enrolledPersons %}
             <li> 
                 {{person}}
             </li>
             {% endfor %} 
             </ul>
-            {% if persons.has_other_pages %}
+            {% if enrolledPersons.has_other_pages %}
                 <ul class="pagination">
-                {% if persons.has_previous %}
+                {% if enrolledPersons.has_previous %}
                     <li><a href="?page={{ persons.previous_page_number }}">&laquo;</a></li>
                 {% else %}
                     <li class="disabled"><span>&laquo;</span></li>
                 {% endif %}
-                {% for i in persons.paginator.page_range %}
+                {% for i in enrolledPersons.paginator.page_range %}
                     {% if persons.number == i %}
                     <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
                     {% else %}
                     <li><a href="?page={{ i }}">{{ i }}</a></li>
                     {% endif %}
                 {% endfor %}
-                {% if persons.has_next %}
+                {% if enrolledPersons.has_next %}
                     <li><a href="?page={{ persons.next_page_number }}">&raquo;</a></li>
                 {% else %}
                     <li class="disabled"><span>&raquo;</span></li>
@@ -46,7 +46,7 @@
             {% endif %}
            </div>
            <div class="col backgroundWhite">
-           
+            <canvas id="line-chart" width="33%" height="33%" ></canvas>
         </div>
        </div> 
     
@@ -114,5 +114,24 @@
             }
           }
       });
+      new Chart(document.getElementById("line-chart"), {
+  type: 'line',
+  data: {
+    labels: [{% for day in lastDays %}"{{day.0}}", {% endfor %}],
+    datasets: [{ 
+        data: [{% for day in lastDays %} {{day.1}} , {% endfor %}],
+        label: "Interactions",
+        borderColor: "#c45850",
+        fill: false
+      }
+    ]
+  },
+  options: {
+    title: {
+      display: true,
+      text: 'World population per region (in millions)'
+    }
+  }
+});
    </script> 
 </body>
