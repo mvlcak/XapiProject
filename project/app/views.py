@@ -217,13 +217,17 @@ def detailCourse(request, course_id):
 	textEnrolled = json.loads(responseEnrolled.text)
 	persons=Person.objects.all()
 	enrolledPersons=[]
+	
 	for pers in textEnrolled:
 		enrolledPersons.append(pers['fullname'])
+	
 	df=pd.DataFrame(columns=['name', 'interactions'])
 	personsInteractions=[]
-	for pers in persons:
-		df=df.append({'name': pers.person_name,'interactions':Activity.objects.filter(person=pers,object=course).count()}, ignore_index=True)
-		personsInteractions.append([pers.person_name,Activity.objects.filter(person=pers,object=course).count()])
+	
+	for pers in enrolledPersons:
+		person=Person(person_name=pers)
+		df=df.append({'name':pers,'interactions':Activity.objects.filter(actor=pers).filter(object=course).count()}, ignore_index=True)
+		personsInteractions.append([pers,Activity.objects.filter(actor=pers).filter(object=course).count()])
 	if len(df.index)>5:
 		X = df[[ 'interactions']]
 		kmeans = KMeans(n_clusters=5).fit(X)
