@@ -15,7 +15,7 @@ class Activity(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     actor = models.CharField(max_length=200)
     verb = models.CharField(max_length=200)
-    object = models.CharField(max_length=200)   
+    object = models.CharField(max_length=600)   
     pub_date = models.DateTimeField('date published')
     timestamp =models.CharField(max_length=200)
     id_activity =models.CharField(max_length=200)
