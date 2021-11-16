@@ -1,14 +1,15 @@
 {%  include 'app/head.html' %}
 <body>
     {%  include 'app/navbar.html' %}
-    <div class="heading">{{ course }}</div>
+    <div class="heading">  <i class="fas fa-book"></i>{{ course }}</div>
     <div class="container">
        <div class="row">
            <div class="col backgroundWhite">
-            <h3>Enrolled Users</h3>
+            <h3><i class="fas fa-user-friends"></i>Enrolled Users</h3>
              <ul>
             {% for person in enrolledPersons %}
             <li> 
+              <i class="fas fa-user"></i>
                 {{person}}
             </li>
             {% endfor %} 
@@ -36,11 +37,12 @@
             {% endif %}    
            </div>
            <div class="col backgroundWhite">
-             <h3>Clustered Persons</h3>
+             <h3><i class="fas fa-user-friends"></i>Clustered Persons</h3>
             {%if clusteredPersons != 0%}
               <ul>
                 {% for person in clusteredPersons%}
-                  <li>{{person.0}} - {{person.1}}</li>
+               
+                  <li> <i class="fas fa-user"></i>{{person.0}} - {{person.1}}</li>
                 {% endfor %}
               </ul>
             {% endif %}
