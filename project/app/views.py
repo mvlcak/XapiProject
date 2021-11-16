@@ -133,9 +133,17 @@ def detailPerson(request, person_id):
 	lastDays.append(["-1 days",Activity.objects.filter(timestamp__contains=time2.strftime('%Y-%m-%d')).filter(person=person_id).count()])
 	time=datetime.datetime.now() 
 	lastDays.append(["today",Activity.objects.filter(timestamp__contains=time.strftime('%Y-%m-%d')).filter(person=person_id).count()])
-	
+	response2 = requests.get('http://host.docker.internal/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=gradereport_overview_get_course_grades&userid=3&moodlewsrestformat=json')
+	text2 = json.loads(response2.text)
+	gradeList=[]
+	for grade in text2['grades']:
+		print(grade)
+		response3 = requests.get('http://host.docker.internal/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_course_get_courses&options[ids][0]='+str(grade['courseid'])+'&moodlewsrestformat=json')
+		text3 = json.loads(response3.text)
+		gradeList.append([text3[0]['fullname'],grade['grade']])
 	return render(request, 'app/personDetail.html', {'person': person,'lastActivities':lastActivities,
-				  'activitiesInteractions':activitiesInteractions,'objectsInteractions':objectsInteractions,'coursesList':coursesList,'lastDays':lastDays})
+				  'activitiesInteractions':activitiesInteractions,'objectsInteractions':objectsInteractions,'coursesList':coursesList,'lastDays':lastDays,
+				'greadeList':gradeList})
 
 @login_required(login_url='loginIn')
 def detailActivity(request, activity_id):
@@ -240,7 +248,7 @@ def detailCourse(request, course_id):
 		clusteredPersons=0
 	personsInteractions=sorted(personsInteractions, key=itemgetter(1))[::-1][:5]
 	activitiesInteractions=[]
-	activities=Activity.objects.distinct()
+	activities=Activity.objects.filter(object=course).distinct()
 	myset=set()
 	for act in activities:
 		myset.add(act.verb)
