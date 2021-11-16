@@ -5,10 +5,11 @@
     <div class="container">
        <div class="row">
            <div class="col backgroundWhite">
-            <h3>Enrolled Courses</h3>
+            <h3><i class="fas fa-book"></i>Enrolled Courses</h3>
             <ul>
             {%for course in coursesList%}
             <li>
+              <i class="fas fa-book"></i>
             {{course}}
             </li>
             {% endfor %}
@@ -31,6 +32,7 @@
             <ul >
           {% for activity in lastActivities %}
                 <li>
+                  <i class="fas fa-walking"></i>
                     <a href="{% url 'detailPerson' activity.person.id %}">{{activity.actor}}</a>
                     {{activity.verb}}
                     {{activity.object}}
