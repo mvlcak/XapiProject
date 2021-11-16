@@ -133,7 +133,7 @@ def detailPerson(request, person_id):
 	lastDays.append(["-1 days",Activity.objects.filter(timestamp__contains=time2.strftime('%Y-%m-%d')).filter(person=person_id).count()])
 	time=datetime.datetime.now() 
 	lastDays.append(["today",Activity.objects.filter(timestamp__contains=time.strftime('%Y-%m-%d')).filter(person=person_id).count()])
-	response2 = requests.get('http://host.docker.internal/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=gradereport_overview_get_course_grades&userid=3&moodlewsrestformat=json')
+	response2 = requests.get('http://host.docker.internal/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=gradereport_overview_get_course_grades&userid='+str(person.id_lms)+'&moodlewsrestformat=json')
 	text2 = json.loads(response2.text)
 	gradeList=[]
 	for grade in text2['grades']:
