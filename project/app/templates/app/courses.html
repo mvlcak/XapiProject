@@ -1,7 +1,7 @@
 {%  include 'app/head.html' %}
 <body>
     {%  include 'app/navbar.html' %}
-    <div class="heading">Courses</div>
+    <div class="heading"><i class="fas fa-book"></i>Courses</div>
     {% for course in courses%}
        <div class="item">
            <a href="{% url 'detailCourse' course.0 %}">{{ course.1 }}</a>

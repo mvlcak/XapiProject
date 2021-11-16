@@ -11,6 +11,7 @@
     </form>
     {% for person in persons%}
        <div class="item">
+        <i class="fas fa-user"></i>
            <a href="{% url 'detailPerson' person.id %}">{{ person.person_name }}</a>
        </div>
     {% endfor %}

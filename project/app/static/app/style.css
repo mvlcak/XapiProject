@@ -19,8 +19,9 @@ ul{
     list-style: none;
 }
 nav{
-    background: linear-gradient(to right, hsl(0, 0%, 100%), rgb(173, 173, 173));
+    background-color: gray;
     justify-content: space-around;
+    text-align: center;
     
 }
 .navbutton{
@@ -34,6 +35,7 @@ nav{
     background: linear-gradient(to right, hsl(0, 0%, 100%), rgb(173, 173, 173));
     border-radius: 2px;
 }
+
 .navbutton:hover{
     background-color: hsl(212, 80%, 63%);
 }
