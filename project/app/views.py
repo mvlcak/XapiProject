@@ -119,29 +119,21 @@ def detailPerson(request, person_id):
 	for course in courses:
 		coursesList.append(course['fullname'])
 	lastDays=[]
-	time7=datetime.datetime.now() - datetime.timedelta(days=6)
-	lastDays.append(["-6 days",Activity.objects.filter(timestamp__contains=time7.strftime('%Y-%m-%d')).filter(person=person_id).count()])
-	time6=datetime.datetime.now() - datetime.timedelta(days=5)
-	lastDays.append(["-5 days",Activity.objects.filter(timestamp__contains=time6.strftime('%Y-%m-%d')).filter(person=person_id).count()])
-	time5=datetime.datetime.now() - datetime.timedelta(days=4)
-	lastDays.append(["-4 days",Activity.objects.filter(timestamp__contains=time5.strftime('%Y-%m-%d')).filter(person=person_id).count()])
-	time4=datetime.datetime.now() - datetime.timedelta(days=3)
-	lastDays.append(["-3 days",Activity.objects.filter(timestamp__contains=time4.strftime('%Y-%m-%d')).filter(person=person_id).count()])
-	time3=datetime.datetime.now() - datetime.timedelta(days=2)
-	lastDays.append(["-2 days",Activity.objects.filter(timestamp__contains=time3.strftime('%Y-%m-%d')).filter(person=person_id).count()])
-	time2=datetime.datetime.now() - datetime.timedelta(days=1)
-	lastDays.append(["-1 days",Activity.objects.filter(timestamp__contains=time2.strftime('%Y-%m-%d')).filter(person=person_id).count()])
-	time=datetime.datetime.now() 
+	for i in range(6,0,-1):
+		time=datetime.datetime.now() - datetime.timedelta(days=i)
+		lastDays.append(["-"+str(i)+" days",Activity.objects.filter(timestamp__contains=time.strftime('%Y-%m-%d')).filter(person=person_id).count()])
 	lastDays.append(["today",Activity.objects.filter(timestamp__contains=time.strftime('%Y-%m-%d')).filter(person=person_id).count()])
 	response2 = requests.get('http://host.docker.internal/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=gradereport_overview_get_course_grades&userid='+str(person.id_lms)+'&moodlewsrestformat=json')
 	text2 = json.loads(response2.text)
 	gradeList=[]
-	for grade in text2['grades']:
-		print(grade)
-		response3 = requests.get('http://host.docker.internal/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_course_get_courses&options[ids][0]='+str(grade['courseid'])+'&moodlewsrestformat=json')
-		text3 = json.loads(response3.text)
-		gradeList.append([text3[0]['fullname'],grade['grade']])
-	return render(request, 'app/personDetail.html', {'person': person,'lastActivities':lastActivities,
+	if person.person_name !="Admin":
+		for grade in text2['grades']:
+			print(grade)
+			response3 = requests.get('http://host.docker.internal/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_course_get_courses&options[ids][0]='+str(grade['courseid'])+'&moodlewsrestformat=json')			
+			text3 = json.loads(response3.text)
+			gradeList.append([text3[0]['fullname'],grade['grade']])	
+					
+		return render(request, 'app/personDetail.html', {'person': person,'lastActivities':lastActivities,
 				  'activitiesInteractions':activitiesInteractions,'objectsInteractions':objectsInteractions,'coursesList':coursesList,'lastDays':lastDays,
 				'greadeList':gradeList})
 
@@ -256,22 +248,10 @@ def detailCourse(request, course_id):
 		activitiesInteractions.append([act,Activity.objects.filter(verb=act).filter(object=course).count()])
 	activitiesInteractions=sorted(activitiesInteractions, key=itemgetter(1))[::-1][:10]
 	lastDays=[]
-	time7=datetime.datetime.now() - datetime.timedelta(days=6)
-	lastDays.append(["-6 days",Activity.objects.filter(timestamp__contains=time7.strftime('%Y-%m-%d')).filter(object=course).count()])
-	time6=datetime.datetime.now() - datetime.timedelta(days=5)
-	lastDays.append(["-5 days",Activity.objects.filter(timestamp__contains=time6.strftime('%Y-%m-%d')).filter(object=course).count()])
-	time5=datetime.datetime.now() - datetime.timedelta(days=4)
-	lastDays.append(["-4 days",Activity.objects.filter(timestamp__contains=time5.strftime('%Y-%m-%d')).filter(object=course).count()])
-	time4=datetime.datetime.now() - datetime.timedelta(days=3)
-	lastDays.append(["-3 days",Activity.objects.filter(timestamp__contains=time4.strftime('%Y-%m-%d')).filter(object=course).count()])
-	time3=datetime.datetime.now() - datetime.timedelta(days=2)
-	lastDays.append(["-2 days",Activity.objects.filter(timestamp__contains=time3.strftime('%Y-%m-%d')).filter(object=course).count()])
-	time2=datetime.datetime.now() - datetime.timedelta(days=1)
-	lastDays.append(["-1 days",Activity.objects.filter(timestamp__contains=time2.strftime('%Y-%m-%d')).filter(object=course).count()])
-	time=datetime.datetime.now() 
+	for i in range(6,0,-1):
+		time=datetime.datetime.now() - datetime.timedelta(days=i)
+		lastDays.append(["-"+str(i)+" days",Activity.objects.filter(timestamp__contains=time.strftime('%Y-%m-%d')).filter(object=course).count()])
 	lastDays.append(["today",Activity.objects.filter(timestamp__contains=time.strftime('%Y-%m-%d')).filter(object=course).count()])
-	
-	
 	
 	return render(request, 'app/courseDetail.html',{'course':course,'persons':persons,'lastActivities':lastActivities,'enrolledPersons':enrolledPersons
 				  ,'personsInteractions':personsInteractions,'activitiesInteractions':activitiesInteractions,'clusteredPersons':clusteredPersons
