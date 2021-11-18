@@ -126,12 +126,15 @@ def detailPerson(request, person_id):
 	response2 = requests.get('http://host.docker.internal/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=gradereport_overview_get_course_grades&userid='+str(person.id_lms)+'&moodlewsrestformat=json')
 	text2 = json.loads(response2.text)
 	gradeList=[]
-	if person.person_name !="Admin":
+	try:
 		for grade in text2['grades']:
 			print(grade)
-			response3 = requests.get('http://host.docker.internal/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_course_get_courses&options[ids][0]='+str(grade['courseid'])+'&moodlewsrestformat=json')			
+			response3 = requests.get('http://localhost/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_course_get_courses&options[ids][0]='+str(grade['courseid'])+'&moodlewsrestformat=json')			
 			text3 = json.loads(response3.text)
 			gradeList.append([text3[0]['fullname'],grade['grade']])	
+	except:
+		gradeList=0
+
 					
 		return render(request, 'app/personDetail.html', {'person': person,'lastActivities':lastActivities,
 				  'activitiesInteractions':activitiesInteractions,'objectsInteractions':objectsInteractions,'coursesList':coursesList,'lastDays':lastDays,
