@@ -94,6 +94,23 @@ label, input {
     margin: 20px 20px;
     max-width: 420px;
 }
+.pagination{
+    justify-content: center;
+}
+.pagination li{
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+.active{
+    background-color: gray;
+    border: 1px black;
+}
+.disabled{
+    background-color: white;
+    border: 1px black;
+}
 .container{
     margin-top: 10px;
 }

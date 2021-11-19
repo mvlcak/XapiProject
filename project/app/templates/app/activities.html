@@ -13,23 +13,23 @@
     {% endfor %}
   
     {% if activityList.has_other_pages %}
-                <ul class="pagination justify-content-center">
+                <ul class="pagination">
                 {% if activityList.has_previous %}
-                    <li class="page-link "><a href="?page={{ activityList.previous_page_number }}">&laquo;</a></li>
+                    <li class="disabled "><a href="?page={{ activityList.previous_page_number }}">&laquo;</a></li>
                 {% else %}
-                    <li class="disabled page-link"><span>&laquo;</span></li>
+                    <li class="disabled"><span>&laquo;</span></li>
                 {% endif %}
                 {% for i in activityList.paginator.page_range %}
                     {% if activityList.number == i %}
-                    <li class="page-link active"><span>{{ i }} <span class="sr-only"></span></span></li>
+                    <li class="active"><span>{{ i }} <span class="sr-only"></span></span></li>
                     {% else %}
-                    <li class="page-link"><a href="?page={{ i }}">{{ i }}</a></li>
+                    <li class="disabled"><a href="?page={{ i }}">{{ i }}</a></li>
                     {% endif %}
                 {% endfor %}
                 {% if activityList.has_next %}
-                    <li class="page-link"><a href="?page={{ activityList.next_page_number }}">&raquo;</a></li>
+                    <li class="disabled"><a href="?page={{ activityList.next_page_number }}">&raquo;</a></li>
                 {% else %}
-                    <li class="page-link disabled"><span>&raquo;</span></li>
+                    <li class="disabled"><span>&raquo;</span></li>
                 {% endif %}
                 </ul>
             {% endif %}    
