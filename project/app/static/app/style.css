@@ -18,6 +18,9 @@ form.form-search {
 ul{
     list-style: none;
 }
+img{
+    max-width: 10%;
+}
 nav{
     background-color: gray;
     justify-content: space-around;
@@ -36,6 +39,10 @@ nav{
     border-radius: 2px;
 }
 
+.navbutton a{
+    text-decoration: none;
+    color: black;
+}
 .navbutton:hover{
     background-color: hsl(212, 80%, 63%);
 }
