@@ -38,7 +38,10 @@ nav{
     background: linear-gradient(to right, hsl(0, 0%, 100%), rgb(173, 173, 173));
     border-radius: 2px;
 }
-
+ a{
+    text-decoration: none;
+    color: black;
+}
 .navbutton a{
     text-decoration: none;
     color: black;
@@ -90,6 +93,8 @@ label, input {
     border-radius: 5px;
     text-align:center;
     margin: 10px 10px;
+ 
+
 }
 .backgroundWhite {
     background: linear-gradient(to right, hsl(0, 0%, 100%), rgb(173, 173, 173));
