@@ -9,12 +9,16 @@
             {% csrf_token %}
         </div>
     </form>
+    <div class="item-container">
     {% for person in persons%}
+    
        <div class="item">
         <i class="fas fa-user"></i>
            <a href="{% url 'detailPerson' person.id %}">{{ person.person_name }}</a>
        </div>
+   
     {% endfor %}
+   </div>
     
     {% if persons.has_other_pages %}
     <ul class="pagination">

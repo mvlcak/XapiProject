@@ -2,6 +2,7 @@
 <body>
     {%  include 'app/navbar.html' %}
     <div class="heading"><i class="fas fa-walking"></i>Activities</div>
+    <div class="item-container">
     {% for activity in activityList %}
         <div class="item">
             <i class="fas fa-walking"></i>
@@ -11,6 +12,7 @@
             {{activity.timestamp}}
         </div>
     {% endfor %}
+    </div>
   
     {% if activityList.has_other_pages %}
                 <ul class="pagination">
