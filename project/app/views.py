@@ -189,7 +189,7 @@ def loadDb(request):
 @login_required(login_url='loginIn')
 def search_persons(request):
 	searched=request.POST.get('name')
-	persons=Person.objects.filter(person_name__contains=searched)
+	persons=Person.objects.filter(person_name__icontains=searched)
 	return render(request, 'app/persons.html',{'persons':persons}) 		
 
 @login_required(login_url='loginIn')
