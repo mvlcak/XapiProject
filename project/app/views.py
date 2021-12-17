@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+
 from operator import itemgetter
 from datetime import date
 import requests
@@ -18,6 +19,8 @@ import pandas as pd
 from sklearn.cluster import KMeans
 
 
+host="host.docker.internal"
+token="73703163bf6f50182787e0c8ee5c63cd"
 
 def registerPage(request):
 	if request.user.is_authenticated:
@@ -113,7 +116,7 @@ def detailPerson(request, person_id):
 	for act in mysetObjects:
 		objectsInteractions.append([act,Activity.objects.filter(object=act).filter(person=person_id).count()])
 	objectsInteractions=sorted(objectsInteractions, key=itemgetter(1))[::-1][:10]
-	response = requests.get('http://host.docker.internal/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_enrol_get_users_courses&userid='+person.id_lms+'&moodlewsrestformat=json')
+	response = requests.get('http://'+host+'/webservice/rest/server.php?wstoken='+token+'&wsfunction=core_enrol_get_users_courses&userid='+person.id_lms+'&moodlewsrestformat=json')
 	courses = json.loads(response.text)
 	coursesList=[]
 	for course in courses:
@@ -124,12 +127,12 @@ def detailPerson(request, person_id):
 		lastDays.append(["-"+str(i)+" days",Activity.objects.filter(timestamp__contains=time.strftime('%Y-%m-%d')).filter(person=person_id).count()])
 	time=time=datetime.datetime.now()
 	lastDays.append(["today",Activity.objects.filter(timestamp__contains=time.strftime('%Y-%m-%d')).filter(person=person_id).count()])
-	response2 = requests.get('http://host.docker.internal/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=gradereport_overview_get_course_grades&userid='+str(person.id_lms)+'&moodlewsrestformat=json')
+	response2 = requests.get('http://'+host+'/webservice/rest/server.php?wstoken='+token+'&wsfunction=gradereport_overview_get_course_grades&userid='+str(person.id_lms)+'&moodlewsrestformat=json')
 	text2 = json.loads(response2.text)
 	gradeList=[]
 	try:
 		for grade in text2['grades']:
-			response3 = requests.get('http://host.docker.internal/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_course_get_courses&options[ids][0]='+str(grade['courseid'])+'&moodlewsrestformat=json')			
+			response3 = requests.get('http://'+host+'/webservice/rest/server.php?wstoken='+token+'&wsfunction=core_course_get_courses&options[ids][0]='+str(grade['courseid'])+'&moodlewsrestformat=json')			
 			text3 = json.loads(response3.text)
 			gradeList.append([text3[0]['fullname'],grade['grade']])	
 	except:
@@ -172,7 +175,7 @@ def search_persons(request):
 
 @login_required(login_url='loginIn')
 def coursesPage(request):
-	response = requests.get('http://host.docker.internal/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_course_get_courses_by_field&value=&moodlewsrestformat=json')
+	response = requests.get('http://'+host+'/webservice/rest/server.php?wstoken='+token+'&wsfunction=core_course_get_courses_by_field&value=&moodlewsrestformat=json')
 	text = json.loads(response.text)
 	courses_list=[]
 	for course in text['courses'] :
@@ -190,18 +193,26 @@ def coursesPage(request):
 
 @login_required(login_url='loginIn')
 def detailCourse(request, course_id):
-	response = requests.get('http://host.docker.internal/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_course_get_courses&options[ids][0]='+str(course_id)+'&moodlewsrestformat=json')
+	response = requests.get('http://'+host+'/webservice/rest/server.php?wstoken='+token+'&wsfunction=core_course_get_courses&options[ids][0]='+str(course_id)+'&moodlewsrestformat=json')
 	text = json.loads(response.text)
 	course=text[0]['fullname']
 	lastActivities=Activity.objects.filter(object=course)[::-1][:5]
-	responseEnrolled = requests.get('http://host.docker.internal/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_enrol_get_enrolled_users&courseid='+str(course_id)+'&moodlewsrestformat=json')
+	responseEnrolled = requests.get('http://'+host+'/webservice/rest/server.php?wstoken='+token+'&wsfunction=core_enrol_get_enrolled_users&courseid='+str(course_id)+'&moodlewsrestformat=json')
 	textEnrolled = json.loads(responseEnrolled.text)
 	persons=Person.objects.all()
 	enrolledPersons=[]
 	
 	for pers in textEnrolled:
 		enrolledPersons.append(pers['fullname'])
+	page = request.GET.get('page', 1)
 	
+	paginator = Paginator(enrolledPersons, 10)
+	try:
+		enrolledPersons = paginator.page(page)
+	except PageNotAnInteger:
+		enrolledPersons = paginator.page(1)
+	except EmptyPage:
+		enrolledPersons= paginator.page(paginator.num_pages)
 	df=pd.DataFrame(columns=['name', 'interactions'])
 	personsInteractions=[]
 	
