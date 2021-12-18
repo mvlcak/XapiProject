@@ -204,11 +204,11 @@ def detailCourse(request, course_id):
 	
 	for pers in textEnrolled:
 		enrolledPersons.append(pers['fullname'])
-	page = request.GET.get('page', 1)
+	page1 = request.GET.get('page1', 1)
 	
 	paginator = Paginator(enrolledPersons, 10)
 	try:
-		enrolledPersons = paginator.page(page)
+		enrolledPersons = paginator.page(page1)
 	except PageNotAnInteger:
 		enrolledPersons = paginator.page(1)
 	except EmptyPage:
@@ -230,6 +230,17 @@ def detailCourse(request, course_id):
 			i=i+1
 	else:
 		clusteredPersons=0
+	page2 = request.GET.get('page2', 1)
+	
+	paginator = Paginator(clusteredPersons, 10)
+	try:
+		clusteredPersons = paginator.page(page2)
+	except PageNotAnInteger:
+		clusteredPersons = paginator.page(1)
+	except EmptyPage:
+		clusteredPersons= paginator.page(paginator.num_pages)
+	df=pd.DataFrame(columns=['name', 'interactions'])
+	personsInteractions=[]	
 	personsInteractions=sorted(personsInteractions, key=itemgetter(1))[::-1][:5]
 	activitiesInteractions=[]
 	activities=Activity.objects.filter(object=course).distinct()
