@@ -83,7 +83,7 @@ def activitiesPage(request):
 def personsPage(request):
 	person_list = Person.objects.all()
 	page = request.GET.get('page', 1)
-	paginator = Paginator(person_list, 10)
+	paginator = Paginator(person_list, 15)
 	try:
 		persons = paginator.page(page)
 	except PageNotAnInteger:
