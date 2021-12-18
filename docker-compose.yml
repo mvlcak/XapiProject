@@ -16,7 +16,7 @@ services:
     build: .
     command: python project/manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/code
+      - .:/project
     ports:
       - "8000:8000"
     depends_on:
