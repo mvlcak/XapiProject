@@ -205,18 +205,18 @@ def detailCourse(request, course_id):
 	for pers in textEnrolled:
 		enrolledPersons.append(pers['fullname'])
 	page1 = request.GET.get('page1', 1)
-	
-	paginator = Paginator(enrolledPersons, 10)
+	enrolledPersons2=enrolledPersons
+	paginator1 = Paginator(enrolledPersons, 10)
 	try:
-		enrolledPersons = paginator.page(page1)
+		enrolledPersons = paginator1.page(page1)
 	except PageNotAnInteger:
-		enrolledPersons = paginator.page(1)
+		enrolledPersons = paginator1.page(1)
 	except EmptyPage:
-		enrolledPersons= paginator.page(paginator.num_pages)
+		enrolledPersons= paginator1.page(paginator1.num_pages)
 	df=pd.DataFrame(columns=['name', 'interactions'])
 	personsInteractions=[]
 	
-	for pers in enrolledPersons:
+	for pers in enrolledPersons2:
 		person=Person(person_name=pers)
 		df=df.append({'name':pers,'interactions':Activity.objects.filter(actor=pers).filter(object=course).count()}, ignore_index=True)
 		personsInteractions.append([pers,Activity.objects.filter(actor=pers).filter(object=course).count()])
@@ -232,15 +232,15 @@ def detailCourse(request, course_id):
 		clusteredPersons=0
 	page2 = request.GET.get('page2', 1)
 	
-	paginator = Paginator(clusteredPersons, 10)
+	paginator2 = Paginator(clusteredPersons, 10)
 	try:
-		clusteredPersons = paginator.page(page2)
+		clusteredPersons = paginator2.page(page2)
 	except PageNotAnInteger:
-		clusteredPersons = paginator.page(1)
+		clusteredPersons = paginator2.page(1)
 	except EmptyPage:
-		clusteredPersons= paginator.page(paginator.num_pages)
+		clusteredPersons= paginator2.page(paginator2.num_pages)
 	df=pd.DataFrame(columns=['name', 'interactions'])
-	personsInteractions=[]	
+		
 	personsInteractions=sorted(personsInteractions, key=itemgetter(1))[::-1][:5]
 	activitiesInteractions=[]
 	activities=Activity.objects.filter(object=course).distinct()

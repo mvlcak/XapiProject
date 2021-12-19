@@ -48,26 +48,26 @@
               </ul>
             {% endif %}
             {% if clusteredPersons.has_other_pages %}
-                <ul class="pagination">
+              <ul class="pagination">
                 {% if clusteredPersons.has_previous %}
-                    <li><a href="?page2={{ clusteredPersons.previous_page_number }}">&laquo;</a></li>
+                  <li class="disabled"><a href="?page2={{ clusteredPersons.previous_page_number }}">&laquo;</a></li>
                 {% else %}
-                    <li class="disabled"><span>&laquo;</span></li>
+                  <li class="disabled"><span>&laquo;</span></li>
                 {% endif %}
                 {% for i in clusteredPersons.paginator.page_range %}
-                    {% if persons.number == i %}
+                  {% if clusteredPersons.number == i %}
                     <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-                    {% else %}
-                    <li><a href="?page2={{ i }}">{{ i }}</a></li>
-                    {% endif %}
+                  {% else %}
+                    <li class="disabled"><a href="?page2={{ i }}">{{ i }}</a></li>
+                  {% endif %}
                 {% endfor %}
                 {% if clusteredPersons.has_next %}
-                    <li><a href="?page2={{ clusteredPersons.next_page_number }}">&raquo;</a></li>
+                  <li class="disabled"><a href="?page2={{ clusteredPersons.next_page_number }}">&raquo;</a></li>
                 {% else %}
-                    <li class="disabled"><span>&raquo;</span></li>
+                  <li class="disabled"><span>&raquo;</span></li>
                 {% endif %}
-                </ul> 
-                {% endif %}
+              </ul>
+            {% endif %}
            </div>
            <div class="col backgroundWhite">
             <canvas id="line-chart" width="33%" height="33%" ></canvas>
@@ -77,7 +77,7 @@
     <div class="row">
         <div class="col backgroundWhite">
             <h3>  <i class="fas fa-walking"></i>Last activities</h3>
-            <ul >
+           <ul >
                 {% for activity in lastActivities %}
              
                       <li>
@@ -91,7 +91,7 @@
                     </ul>
         </div>
         <div class="col backgroundWhite">
-            <canvas id="bar-chart" width="33%" height="33%" ></canvas>
+           <canvas id="bar-chart" width="33%" height="33%" ></canvas>
         </div>
         <div class="col backgroundWhite">
             <canvas id="bar-chart3" width="33%" height="33%" ></canvas>
