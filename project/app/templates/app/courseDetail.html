@@ -15,26 +15,39 @@
             {% endfor %} 
             </ul>
             {% if enrolledPersons.has_other_pages %}
-              <ul class="pagination">
-                {% if enrolledPersons.has_previous %}
-                  <li class="disabled"><a href="?page1={{ enrolledPersons.previous_page_number }}">&laquo;</a></li>
-                {% else %}
-                  <li class="disabled"><span>&laquo;</span></li>
+            <ul class="pagination">
+            {% if enrolledPersons.has_previous %}
+                <li class="disabled "><a href="?page1={{ enrolledPersons.previous_page_number }}">&laquo;</a></li>
+                {%if enrolledPersons.number != 2%}
+                <li class="disabled "><a href="?page1=1">1</a></li>
+                {%if enrolledPersons.number != 3%}
+                <li class="disabled ">...</a></li>
                 {% endif %}
-                {% for i in enrolledPersons.paginator.page_range %}
-                  {% if enrolledPersons.number == i %}
-                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-                  {% else %}
-                    <li class="disabled"><a href="?page1={{ i }}">{{ i }}</a></li>
-                  {% endif %}
-                {% endfor %}
-                {% if enrolledPersons.has_next %}
-                  <li class="disabled"><a href="?page1={{ enrolledPersons.next_page_number }}">&raquo;</a></li>
-                {% else %}
-                  <li class="disabled"><span>&raquo;</span></li>
                 {% endif %}
-              </ul>
+            {% else %}
+                <li class="disabled"><span>&laquo;</span></li>
             {% endif %}
+            {% if enrolledPersons.has_previous %}
+                <li class="disabled "><a href="?page1={{ enrolledPersons.previous_page_number }}">{{ enrolledPersons.previous_page_number }}</a></li>
+            {%endif%}    
+                <li class="active"><span>{{enrolledPersons.number }} <span class="sr-only"></span></span></li>
+                
+                {% if enrolledPersons.has_next %}
+                <li class="disabled"><a href="?page1={{ enrolledPersons.next_page_number }}">{{ enrolledPersons.next_page_number }} </a></li>
+                {% endif %}
+            {% if enrolledPersons.has_next %}
+            {%if enrolledPersons.number != enrolledPersons.paginator.num_pages|add:-1 %}
+            {%if enrolledPersons.number != enrolledPersons.paginator.num_pages|add:-2 %}
+            <li class="disabled ">...</a></li>
+            {% endif %} 
+            <li class="disabled "><a href="?page1={{enrolledPersons.paginator.num_pages}}">{{enrolledPersons.paginator.num_pages}}</a></li>
+            {% endif %}   
+            <li class="disabled"><a href="?page1={{ enrolledPersons.next_page_number }}">&raquo;</a></li>
+            {% else %}
+                <li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+            </ul>
+        {% endif %}
                  
            </div>
            <div class="col backgroundWhite">
@@ -48,26 +61,39 @@
               </ul>
             {% endif %}
             {% if clusteredPersons.has_other_pages %}
-              <ul class="pagination">
-                {% if clusteredPersons.has_previous %}
-                  <li class="disabled"><a href="?page2={{ clusteredPersons.previous_page_number }}">&laquo;</a></li>
-                {% else %}
-                  <li class="disabled"><span>&laquo;</span></li>
+            <ul class="pagination">
+            {% if clusteredPersons.has_previous %}
+                <li class="disabled "><a href="?page2={{ clusteredPersons.previous_page_number }}">&laquo;</a></li>
+                {%if clusteredPersons.number != 2%}
+                <li class="disabled "><a href="?page2=1">1</a></li>
+                {%if clusteredPersons.number != 3%}
+                <li class="disabled ">...</a></li>
                 {% endif %}
-                {% for i in clusteredPersons.paginator.page_range %}
-                  {% if clusteredPersons.number == i %}
-                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-                  {% else %}
-                    <li class="disabled"><a href="?page2={{ i }}">{{ i }}</a></li>
-                  {% endif %}
-                {% endfor %}
-                {% if clusteredPersons.has_next %}
-                  <li class="disabled"><a href="?page2={{ clusteredPersons.next_page_number }}">&raquo;</a></li>
-                {% else %}
-                  <li class="disabled"><span>&raquo;</span></li>
                 {% endif %}
-              </ul>
+            {% else %}
+                <li class="disabled"><span>&laquo;</span></li>
             {% endif %}
+            {% if clusteredPersons.has_previous %}
+                <li class="disabled "><a href="?page2={{ clusteredPersons.previous_page_number }}">{{ clusteredPersons.previous_page_number }}</a></li>
+            {%endif%}    
+                <li class="active"><span>{{clusteredPersons.number }} <span class="sr-only"></span></span></li>
+                
+                {% if clusteredPersons.has_next %}
+                <li class="disabled"><a href="?page2={{ clusteredPersons.next_page_number }}">{{ clusteredPersons.next_page_number }} </a></li>
+                {% endif %}
+            {% if clusteredPersons.has_next %}
+            {%if clusteredPersons.number != clusteredPersons.paginator.num_pages|add:-1 %}
+            {%if clusteredPersons.number != clusteredPersons.paginator.num_pages|add:-2 %}
+            <li class="disabled ">...</a></li>
+            {% endif %} 
+            <li class="disabled "><a href="?page2={{clusteredPersons.paginator.num_pages}}">{{clusteredPersons.paginator.num_pages}}</a></li>
+            {% endif %}   
+            <li class="disabled"><a href="?page2={{ clusteredPersons.next_page_number }}">&raquo;</a></li>
+            {% else %}
+                <li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+            </ul>
+        {% endif %}   
            </div>
            <div class="col backgroundWhite">
             <canvas id="line-chart" width="33%" height="33%" ></canvas>
