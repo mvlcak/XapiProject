@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+from .decorators import unauthenticated_user
 
 from operator import itemgetter
 from datetime import date
@@ -22,13 +22,11 @@ from sklearn.cluster import KMeans
 host="host.docker.internal"
 token="73703163bf6f50182787e0c8ee5c63cd"
 
+@unauthenticated_user
 def registerPage(request):
-	if request.user.is_authenticated:
-		return redirect('main')
-	else:
 		return render(request, 'app/register.html')
 
-
+@unauthenticated_user
 def loginPage(request):
 	return render(request, 'app/login.html')
 
