@@ -218,26 +218,6 @@ def detailCourse(request, course_id):
 		person=Person(person_name=pers)
 		df=df.append({'name':pers,'interactions':Activity.objects.filter(actor=pers).filter(object=course).count()}, ignore_index=True)
 		personsInteractions.append([pers,Activity.objects.filter(actor=pers).filter(object=course).count()])
-	if len(df.index)>5:
-		X = df[[ 'interactions']]
-		kmeans = KMeans(n_clusters=5).fit(X)
-		clusteredPersons=[]
-		i=0
-		for person in kmeans.labels_:
-			clusteredPersons.append([df.loc[i,'name'],person+1])
-			i=i+1
-	else:
-		clusteredPersons=0
-	page2 = request.GET.get('page2', 1)
-	
-	paginator2 = Paginator(clusteredPersons, 10)
-	try:
-		clusteredPersons = paginator2.page(page2)
-	except PageNotAnInteger:
-		clusteredPersons = paginator2.page(1)
-	except EmptyPage:
-		clusteredPersons= paginator2.page(paginator2.num_pages)
-	df=pd.DataFrame(columns=['name', 'interactions'])
 		
 	personsInteractions=sorted(personsInteractions, key=itemgetter(1))[::-1][:5]
 	activitiesInteractions=[]
@@ -253,9 +233,21 @@ def detailCourse(request, course_id):
 		time=datetime.datetime.now() - datetime.timedelta(days=i)
 		lastDays.append(["-"+str(i)+" days",Activity.objects.filter(timestamp__contains=time.strftime('%Y-%m-%d')).filter(object=course).count()])
 	lastDays.append(["today",Activity.objects.filter(timestamp__contains=time.strftime('%Y-%m-%d')).filter(object=course).count()])
-	
+	lastWeeks=[]
+	for i in range(4,1,-1):
+		w=i*7
+		counter=0
+		for j in range(w,w-6,-1):
+			time=datetime.datetime.now() - datetime.timedelta(days=j)
+			counter=counter+Activity.objects.filter(timestamp__contains=time.strftime('%Y-%m-%d')).filter(object=course).count()
+		lastWeeks.append(["-"+str(i)+" weeks",counter])
+	counterThisWeek=0
+	for i in range(6,0,-1):
+		time=datetime.datetime.now() - datetime.timedelta(days=i)
+		counterThisWeek=counterThisWeek+Activity.objects.filter(timestamp__contains=time.strftime('%Y-%m-%d')).filter(object=course).count()
+	lastWeeks.append(["this week",counterThisWeek])
 	return render(request, 'app/courseDetail.html',{'course':course,'persons':persons,'lastActivities':lastActivities,'enrolledPersons':enrolledPersons
-				  ,'personsInteractions':personsInteractions,'activitiesInteractions':activitiesInteractions,'clusteredPersons':clusteredPersons
+				  ,'personsInteractions':personsInteractions,'activitiesInteractions':activitiesInteractions,'lastWeeks':lastWeeks
 				  ,'lastDays':lastDays})	
 
 @login_required(login_url='loginIn')
