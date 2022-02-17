@@ -119,6 +119,14 @@ def detailPerson(request, person_id):
 	coursesList=[]
 	for course in courses:
 		coursesList.append(course['fullname'])
+		page = request.GET.get('page1', 1)
+	paginator = Paginator(coursesList, 10)
+	try:
+		coursesList = paginator.page(page)
+	except PageNotAnInteger:
+		coursesList = paginator.page(1)
+	except EmptyPage:
+		coursesList= paginator.page(paginator.num_pages)
 	lastDays=[]
 	for i in range(6,0,-1):
 		time=datetime.datetime.now() - datetime.timedelta(days=i)
@@ -135,7 +143,14 @@ def detailPerson(request, person_id):
 			gradeList.append([text3[0]['fullname'],grade['grade']])	
 	except:
 		gradeList=0
-
+	page = request.GET.get('page1', 1)
+	paginator = Paginator(gradeList, 10)
+	try:
+		gradeList = paginator.page(page)
+	except PageNotAnInteger:
+		gradeList = paginator.page(1)
+	except EmptyPage:
+		gradeList= paginator.page(paginator.num_pages)
 					
 	return render(request, 'app/personDetail.html', {'person': person,'lastActivities':lastActivities,
 				  'activitiesInteractions':activitiesInteractions,'objectsInteractions':objectsInteractions,'coursesList':coursesList,'lastDays':lastDays,
