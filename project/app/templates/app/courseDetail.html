@@ -130,6 +130,51 @@
        {% endif %}
       </div>
       <div class="col backgroundWhite">
+        <h2><i class="fa-brands fa-42-group"></i>Clustered persons</h2>
+           
+        {%if clustered_persons != 0%}
+         <ul>
+           {% for person in clustered_persons%}
+          
+             <li>{{person.0}} - {{person.1}}</li>
+           {% endfor %}
+               </ul>
+             {% endif %}
+           </ul>
+           {% if clustered_persons.has_other_pages %}
+           <ul class="pagination">
+           {% if clustered_persons.has_previous %}
+               <li class="disabled "><a href="?page3={{ clustered_persons.previous_page_number }}">&laquo;</a></li>
+               {%if clustered_persons.number != 2%}
+               <li class="disabled "><a href="?page3=1">1</a></li>
+               {%if clustered_persons.number != 3%}
+               <li class="disabled ">...</a></li>
+               {% endif %}
+               {% endif %}
+           {% else %}
+               <li class="disabled"><span>&laquo;</span></li>
+           {% endif %}
+           {% if clustered_persons.has_previous %}
+               <li class="disabled "><a href="?page3={{ clustered_persons.previous_page_number }}">{{ clustered_persons.previous_page_number }}</a></li>
+           {%endif%}    
+               <li class="active"><span>{{clustered_persons.number }} <span class="sr-only"></span></span></li>
+               
+               {% if clustered_persons.has_next %}
+               <li class="disabled"><a href="?page3={{ clustered_persons.next_page_number }}">{{ clustered_persons.next_page_number }} </a></li>
+               {% endif %}
+           {% if clustered_persons.has_next %}
+           {%if clustered_persons.number != clustered_persons.paginator.num_pages|add:-1 %}
+           {%if clustered_persons.number != clustered_persons.paginator.num_pages|add:-2 %}
+           <li class="disabled ">...</a></li>
+           {% endif %} 
+           <li class="disabled "><a href="?page3={{clustered_persons.paginator.num_pages}}">{{clustered_persons.paginator.num_pages}}</a></li>
+           {% endif %}   
+           <li class="disabled"><a href="?page3={{ clustered_persons.next_page_number }}">&raquo;</a></li>
+           {% else %}
+               <li class="disabled"><span>&raquo;</span></li>
+           {% endif %}
+           </ul>
+       {% endif %}
       </div> 
       <div class="col backgroundWhite">
       </div>   

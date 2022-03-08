@@ -282,11 +282,41 @@ def detailCourse(request, course_id):
 	except PageNotAnInteger:
 		grades = paginator2.page(1)
 	except EmptyPage:
-		grades= paginator2.page(paginator2.num_pages)				
+		grades= paginator2.page(paginator2.num_pages)
 
+	df=pd.DataFrame(columns=['name', 'grades','interactions'])
+	response_clustering = requests.get('http://'+host+'/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_enrol_get_enrolled_users&courseid='+str(course_id)+'&moodlewsrestformat=json')
+	text_clustering = json.loads(response_clustering.text)
+	for pers in text_clustering[1:]:
+		response3 = requests.get('http://'+host+'/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=gradereport_overview_get_course_grades&userid='+str(pers['id'])+'&moodlewsrestformat=json')
+		text3 = json.loads(response3.text)
+		for grade in text3['grades']:
+			if course_id == grade['courseid']:
+				if grade['grade']=='-':
+					df=df.append({'grades': 0, 'name':pers['fullname'], 'interactions':Activity.objects.filter(actor=pers['fullname']).filter(object=course).count()}, ignore_index=True)
+				else:
+					df=df.append({'grades': grade['grade'], 'name':pers['fullname'], 'interactions':Activity.objects.filter(actor=pers['fullname']).filter(object=course).count() }, ignore_index=True)
+    
+	X = df[['interactions','grades']]	
+	kmeans = KMeans(n_clusters=5).fit(X)	
+	clustered_persons=[]
+
+	i=0
+	for person in kmeans.labels_:
+		clustered_persons.append([df.loc[i,'name'], person])
+		i+=1			
+
+	page3 = request.GET.get('page3', 1)
+	paginator3 = Paginator(clustered_persons, 10)
+	try:
+		clustered_persons = paginator3.page(page3)
+	except PageNotAnInteger:
+		clustered_persons = paginator3.page(1)
+	except EmptyPage:
+		clustered_persons= paginator3.page(paginator3.num_pages)
 	return render(request, 'app/courseDetail.html',{'course':course,'persons':persons,'lastActivities':lastActivities,'enrolledPersons':enrolledPersons
 				  ,'personsInteractions':personsInteractions,'activitiesInteractions':activitiesInteractions,'lastWeeks':lastWeeks
-				  ,'lastDays':lastDays,'grades':grades})	
+				  ,'lastDays':lastDays,'grades':grades,'clustered_persons':clustered_persons})	
 
 @login_required(login_url='loginIn')
 def search_courses(request):
