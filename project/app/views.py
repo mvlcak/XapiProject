@@ -234,8 +234,8 @@ def detailCourse(request, course_id):
 		person=Person(person_name=pers)
 		df=df.append({'name':pers,'interactions':Activity.objects.filter(actor=pers).filter(object=course).count()}, ignore_index=True)
 		personsInteractions.append([pers,Activity.objects.filter(actor=pers).filter(object=course).count()])
-		
 	personsInteractions=sorted(personsInteractions, key=itemgetter(1))[::-1][:5]
+	
 	activitiesInteractions=[]
 	activities=Activity.objects.filter(object=course).distinct()
 	myset=set()
@@ -323,9 +323,25 @@ def detailCourse(request, course_id):
 		clustered_persons = paginator3.page(1)
 	except EmptyPage:
 		clustered_persons= paginator3.page(paginator3.num_pages)
+	
+	activities_per_person=[]
+	for pers in enrolledPersons2:
+		person=Person(person_name=pers)
+		df=df.append({'name':pers,'interactions':Activity.objects.filter(actor=pers).filter(object=course).count()}, ignore_index=True)
+		activities_per_person.append([pers,Activity.objects.filter(actor=pers).filter(object=course).count()])	
+	
+	page4 = request.GET.get('page4', 1)
+	paginator4 = Paginator(activities_per_person, 10)
+	try:
+		activities_per_person = paginator4.page(page4)
+	except PageNotAnInteger:
+		activities_per_person = paginator4.page(1)
+	except EmptyPage:
+		activities_per_person= paginator4.page(paginator4.num_pages)
+
 	return render(request, 'app/courseDetail.html',{'course':course,'persons':persons,'lastActivities':lastActivities,'enrolledPersons':enrolledPersons
 				  ,'personsInteractions':personsInteractions,'activitiesInteractions':activitiesInteractions,'lastWeeks':lastWeeks
-				  ,'lastDays':lastDays,'grades':grades,'clustered_persons':clustered_persons})	
+				  ,'lastDays':lastDays,'grades':grades,'clustered_persons':clustered_persons,'activities_per_person':activities_per_person})	
 
 @login_required(login_url='loginIn')
 def search_courses(request):
