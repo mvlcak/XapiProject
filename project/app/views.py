@@ -214,8 +214,9 @@ def detailCourse(request, course_id):
 	textEnrolled = json.loads(responseEnrolled.text)
 	persons=Person.objects.all()
 	enrolledPersons=[]
-	
+	counter=0
 	for pers in textEnrolled:
+		counter+=1
 		enrolledPersons.append(pers['fullname'])
 	page1 = request.GET.get('page1', 1)
 	enrolledPersons2=enrolledPersons
@@ -297,14 +298,22 @@ def detailCourse(request, course_id):
 				else:
 					df=df.append({'grades': grade['grade'], 'name':pers['fullname'], 'interactions':Activity.objects.filter(actor=pers['fullname']).filter(object=course).count() }, ignore_index=True)
     
-	X = df[['interactions','grades']]	
-	kmeans = KMeans(n_clusters=5).fit(X)	
 	clustered_persons=[]
+	
+	if counter > 1 and course_id != 1:
+		if counter > 5:
+			n=5
+		else:
+			n=counter
+		X = df[['interactions','grades']]	
+		kmeans = KMeans(n_clusters=n).fit(X)	
+		
 
-	i=0
-	for person in kmeans.labels_:
-		clustered_persons.append([df.loc[i,'name'], person])
-		i+=1			
+		i=0
+		for person in kmeans.labels_:
+			clustered_persons.append([df.loc[i,'name'], person])
+			i+=1			
+	
 
 	page3 = request.GET.get('page3', 1)
 	paginator3 = Paginator(clustered_persons, 10)
