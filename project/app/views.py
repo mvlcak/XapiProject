@@ -261,9 +261,32 @@ def detailCourse(request, course_id):
 		time=datetime.datetime.now() - datetime.timedelta(days=i)
 		counterThisWeek=counterThisWeek+Activity.objects.filter(timestamp__contains=time.strftime('%Y-%m-%d')).filter(object=course).count()
 	lastWeeks.append(["this week",counterThisWeek])
+	
+	grades=[]
+	response_grades = requests.get('http://'+host+'/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_enrol_get_enrolled_users&courseid='+str(course_id)+'&moodlewsrestformat=json')
+	text2 = json.loads(response_grades.text)
+	for pers in text2[1:]:
+		response3 = requests.get('http://'+host+'/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=gradereport_overview_get_course_grades&userid='+str(pers['id'])+'&moodlewsrestformat=json')
+		text3 = json.loads(response3.text)
+		for grade in text3['grades']:
+			if course_id == grade['courseid']:
+				if grade['grade']=='-':
+					grades.append([pers['fullname'],'0'])
+				else:
+					grades.append([pers['fullname'],grade['grade']])
+
+	page2 = request.GET.get('page2', 1)
+	paginator2 = Paginator(grades, 10)
+	try:
+		grades = paginator2.page(page2)
+	except PageNotAnInteger:
+		grades = paginator2.page(1)
+	except EmptyPage:
+		grades= paginator2.page(paginator2.num_pages)				
+
 	return render(request, 'app/courseDetail.html',{'course':course,'persons':persons,'lastActivities':lastActivities,'enrolledPersons':enrolledPersons
 				  ,'personsInteractions':personsInteractions,'activitiesInteractions':activitiesInteractions,'lastWeeks':lastWeeks
-				  ,'lastDays':lastDays})	
+				  ,'lastDays':lastDays,'grades':grades})	
 
 @login_required(login_url='loginIn')
 def search_courses(request):

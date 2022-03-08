@@ -83,7 +83,51 @@
     </div> 
     <div class="row">
       <div class="col backgroundWhite">
-       
+        <h2><i class="fas fa-graduation-cap"></i>Grade list</h2>
+           
+        {%if grades != 0%}
+         <ul>
+           {% for grade in grades%}
+          
+             <li>{{grade.0}} - {{grade.1}}</li>
+           {% endfor %}
+               </ul>
+             {% endif %}
+           </ul>
+           {% if grades.has_other_pages %}
+           <ul class="pagination">
+           {% if grades.has_previous %}
+               <li class="disabled "><a href="?page2={{ grades.previous_page_number }}">&laquo;</a></li>
+               {%if grades.number != 2%}
+               <li class="disabled "><a href="?page2=1">1</a></li>
+               {%if grades.number != 3%}
+               <li class="disabled ">...</a></li>
+               {% endif %}
+               {% endif %}
+           {% else %}
+               <li class="disabled"><span>&laquo;</span></li>
+           {% endif %}
+           {% if grades.has_previous %}
+               <li class="disabled "><a href="?page2={{ grades.previous_page_number }}">{{ grades.previous_page_number }}</a></li>
+           {%endif%}    
+               <li class="active"><span>{{grades.number }} <span class="sr-only"></span></span></li>
+               
+               {% if grades.has_next %}
+               <li class="disabled"><a href="?page2={{ grades.next_page_number }}">{{ grades.next_page_number }} </a></li>
+               {% endif %}
+           {% if grades.has_next %}
+           {%if grades.number != grades.paginator.num_pages|add:-1 %}
+           {%if grades.number != grades.paginator.num_pages|add:-2 %}
+           <li class="disabled ">...</a></li>
+           {% endif %} 
+           <li class="disabled "><a href="?page2={{grades.paginator.num_pages}}">{{grades.paginator.num_pages}}</a></li>
+           {% endif %}   
+           <li class="disabled"><a href="?page2={{ grades.next_page_number }}">&raquo;</a></li>
+           {% else %}
+               <li class="disabled"><span>&raquo;</span></li>
+           {% endif %}
+           </ul>
+       {% endif %}
       </div>
       <div class="col backgroundWhite">
       </div> 
