@@ -264,10 +264,24 @@ def detailCourse(request, course_id):
 	lastWeeks.append(["this week",counterThisWeek])
 	
 	grades=[]
-	response_grades = requests.get('http://'+host+'/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_enrol_get_enrolled_users&courseid='+str(course_id)+'&moodlewsrestformat=json')
+	response_grades = requests.get(
+		'http://'
+		+host+
+		'/webservice/rest/server.php?wstoken='
+		+token+
+		'&wsfunction=core_enrol_get_enrolled_users&courseid='
+		+str(course_id)+
+		'&moodlewsrestformat=json')
 	text2 = json.loads(response_grades.text)
 	for pers in text2[1:]:
-		response3 = requests.get('http://'+host+'/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=gradereport_overview_get_course_grades&userid='+str(pers['id'])+'&moodlewsrestformat=json')
+		response3 = requests.get(
+			'http://'
+			+host+
+			'/webservice/rest/server.php?wstoken='
+			+token+
+			'&wsfunction=gradereport_overview_get_course_grades&userid='
+			+str(pers['id'])+
+			'&moodlewsrestformat=json')
 		text3 = json.loads(response3.text)
 		for grade in text3['grades']:
 			if course_id == grade['courseid']:
@@ -286,17 +300,34 @@ def detailCourse(request, course_id):
 		grades= paginator2.page(paginator2.num_pages)
 
 	df=pd.DataFrame(columns=['name', 'grades','interactions'])
-	response_clustering = requests.get('http://'+host+'/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=core_enrol_get_enrolled_users&courseid='+str(course_id)+'&moodlewsrestformat=json')
+	response_clustering = requests.get(
+		'http://'
+		+host+
+		'/webservice/rest/server.php?wstoken='
+		+token+
+		'&wsfunction=core_enrol_get_enrolled_users&courseid='
+		+str(course_id)+
+		'&moodlewsrestformat=json')
 	text_clustering = json.loads(response_clustering.text)
 	for pers in text_clustering[1:]:
-		response3 = requests.get('http://'+host+'/webservice/rest/server.php?wstoken=73703163bf6f50182787e0c8ee5c63cd&wsfunction=gradereport_overview_get_course_grades&userid='+str(pers['id'])+'&moodlewsrestformat=json')
+		response3 = requests.get(
+			'http://'
+			+host+
+			'/webservice/rest/server.php?wstoken='+
+			token+
+			'&wsfunction=gradereport_overview_get_course_grades&userid='
+			+str(pers['id'])+
+			'&moodlewsrestformat=json')
 		text3 = json.loads(response3.text)
 		for grade in text3['grades']:
 			if course_id == grade['courseid']:
 				if grade['grade']=='-':
-					df=df.append({'grades': 0, 'name':pers['fullname'], 'interactions':Activity.objects.filter(actor=pers['fullname']).filter(object=course).count()}, ignore_index=True)
+					df=df.append({'grades': 0, 'name':pers['fullname'], 
+					'interactions':Activity.objects.filter(actor=pers['fullname']).filter(object=course).count()}, ignore_index=True)
 				else:
-					df=df.append({'grades': grade['grade'], 'name':pers['fullname'], 'interactions':Activity.objects.filter(actor=pers['fullname']).filter(object=course).count() }, ignore_index=True)
+					df=df.append({'grades': grade['grade'],
+					 'name':pers['fullname'], 
+					 'interactions':Activity.objects.filter(actor=pers['fullname']).filter(object=course).count() }, ignore_index=True)
     
 	clustered_persons=[]
 	
