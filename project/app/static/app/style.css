@@ -192,4 +192,11 @@ label, input {
     color: white;
     margin-right: 20px;
   }
- 
+@media(max-width:400px){
+    .backgroundWhite{
+        min-width: 320px;
+    }
+    .hide-mobile-only{
+        display: none;
+    }  
+}
