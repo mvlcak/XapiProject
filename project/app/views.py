@@ -191,7 +191,7 @@ def coursesPage(request):
 	response = requests.get('http://'+host+'/webservice/rest/server.php?wstoken='+token+'&wsfunction=core_course_get_courses_by_field&value=&moodlewsrestformat=json')
 	text = json.loads(response.text)
 	courses_list=[]
-	for course in text['courses'] :
+	for course in text['courses'][1:] :
 			courses_list.append([course['id'],course['fullname']])
 	page = request.GET.get('page', 1)
 	paginator = Paginator(courses_list, 10)
@@ -214,9 +214,9 @@ def detailCourse(request, course_id):
 	textEnrolled = json.loads(responseEnrolled.text)
 	persons=Person.objects.all()
 	enrolledPersons=[]
-	counter=0
+	count_persons=0
 	for pers in textEnrolled:
-		counter+=1
+		count_persons=count_persons+1
 		enrolledPersons.append(pers['fullname'])
 	page1 = request.GET.get('page1', 1)
 	enrolledPersons2=enrolledPersons
@@ -310,32 +310,25 @@ def detailCourse(request, course_id):
 		'&moodlewsrestformat=json')
 	text_clustering = json.loads(response_clustering.text)
 	for pers in text_clustering[1:]:
-		response3 = requests.get(
-			'http://'
-			+host+
-			'/webservice/rest/server.php?wstoken='+
-			token+
-			'&wsfunction=gradereport_overview_get_course_grades&userid='
-			+str(pers['id'])+
-			'&moodlewsrestformat=json')
+		response3 = requests.get('http://'+host+'/webservice/rest/server.php?wstoken='+token+'&wsfunction=gradereport_overview_get_course_grades&userid='+str(pers['id'])+'&moodlewsrestformat=json')
 		text3 = json.loads(response3.text)
 		for grade in text3['grades']:
 			if course_id == grade['courseid']:
 				if grade['grade']=='-':
-					df=df.append({'grades': 0, 'name':pers['fullname'], 
-					'interactions':Activity.objects.filter(actor=pers['fullname']).filter(object=course).count()}, ignore_index=True)
+					d = {'name': [pers['fullname']], 'grades': [0], 'interactions': [Activity.objects.filter(actor=pers['fullname']).filter(object=course).count()]}
+					df2 = pd.DataFrame(data=d)
+					df=pd.concat([df,df2], ignore_index=True)
 				else:
-					df=df.append({'grades': grade['grade'],
-					 'name':pers['fullname'], 
-					 'interactions':Activity.objects.filter(actor=pers['fullname']).filter(object=course).count() }, ignore_index=True)
-    
+					d = {'name': [pers['fullname']], 'grades': [grade['grade']], 'interactions': [Activity.objects.filter(actor=pers['fullname']).filter(object=course).count()]}
+					df2 = pd.DataFrame(data=d)
+					df=pd.concat([df,df2], ignore_index=True)
 	clustered_persons=[]
 	
-	if counter > 1 and course_id != 1:
-		if counter > 5:
+	if count_persons > 1 and course_id != 1:
+		if count_persons > 5:
 			n=5
 		else:
-			n=counter
+			n=count_persons
 		X = df[['interactions','grades']]	
 		kmeans = KMeans(n_clusters=n).fit(X)	
 		
