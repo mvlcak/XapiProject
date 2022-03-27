@@ -117,6 +117,7 @@ def detailPerson(request, person_id):
 	response = requests.get('http://'+host+'/webservice/rest/server.php?wstoken='+token+'&wsfunction=core_enrol_get_users_courses&userid='+person.id_lms+'&moodlewsrestformat=json')
 	courses = json.loads(response.text)
 	coursesList=[]
+	page = request.GET.get('page1', 1)
 	for course in courses:
 		coursesList.append(course['fullname'])
 		page = request.GET.get('page1', 1)
