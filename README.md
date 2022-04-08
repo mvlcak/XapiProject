@@ -33,13 +33,14 @@ docker exec -it <your app ID> bash
 apt-get update
 apt-get install cron
 ```
-14. Change directory to be in same folder as manage.py
+14. Change directory to be in same folder as manage.py 
 ```
 cd project
 ```
+15. Run commands
 ```
 python manage.py crontab add
 service cron start
 python manage.py migrate
 ```
-15. Congratulation, you have installed XapiProject 
+16. Congratulation, you have installed XapiProject 
