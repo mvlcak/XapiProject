@@ -1,7 +1,7 @@
 from .models import *
 import requests,json
 def my_cron_job():
-	response = requests.get('https://watershedlrs.com/api/organizations/15941/query/export?type=json',
+	response = requests.get('https://watershedlrs.com/api/organizations//query/export?type=json',
                             auth=('a8970a17258465', '1acab410733815'))
 	text = json.loads(response.text)
 	for activity in text:

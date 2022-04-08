@@ -20,7 +20,7 @@ from sklearn.cluster import KMeans
 
 
 host="host.docker.internal"
-token="73703163bf6f50182787e0c8ee5c63cd"
+token=""
 
 @unauthenticated_user
 def registerPage(request):
