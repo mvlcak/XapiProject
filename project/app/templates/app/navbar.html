@@ -1,0 +1,31 @@
+<nav>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
+    aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a href="{% url 'main' %}">
+    <img src="static/app/logo2.png" alt="">
+  </a>
+  <div class="navbutton">
+    <i class="fas fa-home"></i>
+    <a href="{% url 'main' %}">Home</a>
+  </div>
+  <div class="navbutton">
+    <i class="fas fa-user-friends"></i>
+    <a href="{% url 'persons' %}">Persons</a>
+  </div>
+
+  <div class="navbutton">
+    <i class="fas fa-walking"></i>
+    <a href="{% url 'activities' %}">Activities</a>
+  </div>
+  <div class="navbutton">
+    <i class="fas fa-book"></i>
+    <a href="{% url 'courses' %}">Courses</a>
+  </div>
+  <div class="navbutton">
+    <i class="fas fa-door-open"></i>
+    <a href="{% url 'logout' %}">Logout</a>
+  </div>
+
+</nav>

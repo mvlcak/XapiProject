@@ -1,0 +1,58 @@
+{%  include 'app/head.html' %}
+<body>
+    {%  include 'app/navbar.html' %}
+    <div class="heading"><i class="fas fa-user-friends"></i>Persons</div>
+    <form action="{% url 'search_persons' %}" method="post" class="form-search">
+        <div class="form-search">
+            <input type="text" name="name" id="name" class="text" required>
+            <input type="submit" value="Search">
+            {% csrf_token %}
+        </div>
+    </form>
+    <div class="item-container">
+    {% for person in persons%}
+    
+       <div class="item">
+        <i class="fas fa-user"></i>
+           <a href="{% url 'detailPerson' person.id %}">{{ person.person_name }}</a>
+       </div>
+   
+    {% endfor %}
+   </div>
+    
+   {% if persons.has_other_pages %}
+    <ul class="pagination">
+    {% if persons.has_previous %}
+        <li class="disabled "><a href="?page={{ persons.previous_page_number }}">&laquo;</a></li>
+        {%if persons.number != 2%}
+        <li class="disabled "><a href="?page=1">1</a></li>
+        {%if persons.number != 3%}
+        <li class="disabled ">...</a></li>
+        {% endif %}
+        {% endif %}
+    {% else %}
+        <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% if persons.has_previous %}
+        <li class="disabled "><a href="?page={{ persons.previous_page_number }}">{{ persons.previous_page_number }}</a></li>
+    {%endif%}    
+        <li class="active"><span>{{persons.number }} <span class="sr-only"></span></span></li>
+        
+        {% if persons.has_next %}
+        <li class="disabled"><a href="?page={{ persons.next_page_number }}">{{ persons.next_page_number }} </a></li>
+        {% endif %}
+    {% if persons.has_next %}
+    {%if persons.number != persons.paginator.num_pages|add:-1 %}
+    {%if persons.number != persons.paginator.num_pages|add:-2 %}
+    <li class="disabled ">...</a></li>
+    {% endif %} 
+    <li class="disabled "><a href="?page={{persons.paginator.num_pages}}">{{persons.paginator.num_pages}}</a></li>
+    {% endif %}   
+    <li class="disabled"><a href="?page={{ persons.next_page_number }}">&raquo;</a></li>
+    {% else %}
+        <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+    </ul>
+{% endif %}   
+</body>
+</html>

@@ -1,0 +1,308 @@
+{%  include 'app/head.html' %}
+<body>
+    {%  include 'app/navbar.html' %}
+    <div class="heading">  <i class="fas fa-book"></i>{{ course }}</div>
+    <div class="container">
+       <div class="row">
+           <div class="col backgroundWhite">
+            <h3><i class="fas fa-user-friends"></i>Enrolled Users</h3>
+             <ul>
+            {% for person in enrolledPersons %}
+            <li> 
+              <i class="fas fa-user"></i>
+                <a href="">{{person.person_name}}</a>{{person}}
+            </li>
+            {% endfor %} 
+            </ul>
+            {% if enrolledPersons.has_other_pages %}
+            <ul class="pagination">
+            {% if enrolledPersons.has_previous %}
+                <li class="disabled "><a href="?page1={{ enrolledPersons.previous_page_number }}">&laquo;</a></li>
+                {%if enrolledPersons.number != 2%}
+                <li class="disabled "><a href="?page1=1">1</a></li>
+                {%if enrolledPersons.number != 3%}
+                <li class="disabled ">...</a></li>
+                {% endif %}
+                {% endif %}
+            {% else %}
+                <li class="disabled"><span>&laquo;</span></li>
+            {% endif %}
+            {% if enrolledPersons.has_previous %}
+                <li class="disabled "><a href="?page1={{ enrolledPersons.previous_page_number }}">{{ enrolledPersons.previous_page_number }}</a></li>
+            {%endif%}    
+                <li class="active"><span>{{enrolledPersons.number }} <span class="sr-only"></span></span></li>
+                
+                {% if enrolledPersons.has_next %}
+                <li class="disabled"><a href="?page1={{ enrolledPersons.next_page_number }}">{{ enrolledPersons.next_page_number }} </a></li>
+                {% endif %}
+            {% if enrolledPersons.has_next %}
+            {%if enrolledPersons.number != enrolledPersons.paginator.num_pages|add:-1 %}
+            {%if enrolledPersons.number != enrolledPersons.paginator.num_pages|add:-2 %}
+            <li class="disabled ">...</a></li>
+            {% endif %} 
+            <li class="disabled "><a href="?page1={{enrolledPersons.paginator.num_pages}}">{{enrolledPersons.paginator.num_pages}}</a></li>
+            {% endif %}   
+            <li class="disabled"><a href="?page1={{ enrolledPersons.next_page_number }}">&raquo;</a></li>
+            {% else %}
+                <li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+            </ul>
+        {% endif %}
+                 
+           </div>
+           <div class="col backgroundWhite">
+            <canvas id="line-chart2" width="33%" height="33%" ></canvas>
+           </div>
+           <div class="col backgroundWhite">
+            <canvas id="line-chart" width="33%" height="33%" ></canvas>
+        </div>
+       </div> 
+    
+    <div class="row">
+        <div class="col backgroundWhite">
+            <h3>  <i class="fas fa-walking"></i>Last activities</h3>
+           <ul >
+                {% for activity in lastActivities %}
+             
+                      <li>
+                        <i class="fas fa-walking"></i>
+                          <a href="{% url 'detailPerson' activity.person.id %}">{{activity.actor}}</a>
+                          {{activity.verb}}
+                          {{activity.object}}
+                          {{activity.timestamp}}
+                      </li>
+                  {% endfor %}
+                    </ul>
+        </div>
+        <div class="col backgroundWhite">
+           <canvas id="bar-chart" width="33%" height="33%" ></canvas>
+        </div>
+        <div class="col backgroundWhite">
+            <canvas id="bar-chart3" width="33%" height="33%" ></canvas>
+     </div>
+    </div> 
+    <div class="row">
+      <div class="col backgroundWhite">
+        <h2><i class="fas fa-graduation-cap"></i>Grade list</h2>
+           
+        {%if grades != 0%}
+         <ul>
+           {% for grade in grades%}
+          
+             <li>{{grade.0}} - {{grade.1}}</li>
+           {% endfor %}
+               </ul>
+             {% endif %}
+           </ul>
+           {% if grades.has_other_pages %}
+           <ul class="pagination">
+           {% if grades.has_previous %}
+               <li class="disabled "><a href="?page2={{ grades.previous_page_number }}">&laquo;</a></li>
+               {%if grades.number != 2%}
+               <li class="disabled "><a href="?page2=1">1</a></li>
+               {%if grades.number != 3%}
+               <li class="disabled ">...</a></li>
+               {% endif %}
+               {% endif %}
+           {% else %}
+               <li class="disabled"><span>&laquo;</span></li>
+           {% endif %}
+           {% if grades.has_previous %}
+               <li class="disabled "><a href="?page2={{ grades.previous_page_number }}">{{ grades.previous_page_number }}</a></li>
+           {%endif%}    
+               <li class="active"><span>{{grades.number }} <span class="sr-only"></span></span></li>
+               
+               {% if grades.has_next %}
+               <li class="disabled"><a href="?page2={{ grades.next_page_number }}">{{ grades.next_page_number }} </a></li>
+               {% endif %}
+           {% if grades.has_next %}
+           {%if grades.number != grades.paginator.num_pages|add:-1 %}
+           {%if grades.number != grades.paginator.num_pages|add:-2 %}
+           <li class="disabled ">...</a></li>
+           {% endif %} 
+           <li class="disabled "><a href="?page2={{grades.paginator.num_pages}}">{{grades.paginator.num_pages}}</a></li>
+           {% endif %}   
+           <li class="disabled"><a href="?page2={{ grades.next_page_number }}">&raquo;</a></li>
+           {% else %}
+               <li class="disabled"><span>&raquo;</span></li>
+           {% endif %}
+           </ul>
+       {% endif %}
+      </div>
+      <div class="col backgroundWhite">
+        <h2><i class="fa-brands fa-42-group"></i>Clustered persons</h2>
+           
+        {%if clustered_persons != 0%}
+         <ul>
+           {% for person in clustered_persons%}
+          
+             <li>{{person.0}} - {{person.1}}</li>
+           {% endfor %}
+               </ul>
+             {% endif %}
+         
+           {% if clustered_persons.has_other_pages %}
+           <ul class="pagination">
+           {% if clustered_persons.has_previous %}
+               <li class="disabled "><a href="?page3={{ clustered_persons.previous_page_number }}">&laquo;</a></li>
+               {%if clustered_persons.number != 2%}
+               <li class="disabled "><a href="?page3=1">1</a></li>
+               {%if clustered_persons.number != 3%}
+               <li class="disabled ">...</a></li>
+               {% endif %}
+               {% endif %}
+           {% else %}
+               <li class="disabled"><span>&laquo;</span></li>
+           {% endif %}
+           {% if clustered_persons.has_previous %}
+               <li class="disabled "><a href="?page3={{ clustered_persons.previous_page_number }}">{{ clustered_persons.previous_page_number }}</a></li>
+           {%endif%}    
+               <li class="active"><span>{{clustered_persons.number }} <span class="sr-only"></span></span></li>
+               
+               {% if clustered_persons.has_next %}
+               <li class="disabled"><a href="?page3={{ clustered_persons.next_page_number }}">{{ clustered_persons.next_page_number }} </a></li>
+               {% endif %}
+           {% if clustered_persons.has_next %}
+           {%if clustered_persons.number != clustered_persons.paginator.num_pages|add:-1 %}
+           {%if clustered_persons.number != clustered_persons.paginator.num_pages|add:-2 %}
+           <li class="disabled ">...</a></li>
+           {% endif %} 
+           <li class="disabled "><a href="?page3={{clustered_persons.paginator.num_pages}}">{{clustered_persons.paginator.num_pages}}</a></li>
+           {% endif %}   
+           <li class="disabled"><a href="?page3={{ clustered_persons.next_page_number }}">&raquo;</a></li>
+           {% else %}
+               <li class="disabled"><span>&raquo;</span></li>
+           {% endif %}
+           </ul>
+       {% endif %}
+      </div> 
+      <div class="col backgroundWhite">
+        <h2><i class="fas fa-walking"></i>Activities per person</h2>
+        {%if activities_per_person != 0%}
+         <ul>
+           {% for person in activities_per_person%}
+          
+             <li>{{person.0}} - {{person.1}}</li>
+           {% endfor %}
+               </ul>
+             {% endif %}
+           
+           {% if activities_per_person.has_other_pages %}
+           <ul class="pagination">
+           {% if activities_per_person.has_previous %}
+               <li class="disabled "><a href="?page4={{ activities_per_person.previous_page_number }}">&laquo;</a></li>
+               {%if activities_per_person.number != 2%}
+               <li class="disabled "><a href="?page4=1">1</a></li>
+               {%if activities_per_person.number != 3%}
+               <li class="disabled ">...</a></li>
+               {% endif %}
+               {% endif %}
+           {% else %}
+               <li class="disabled"><span>&laquo;</span></li>
+           {% endif %}
+           {% if activities_per_person.has_previous %}
+               <li class="disabled "><a href="?page4={{ activities_per_person.previous_page_number }}">{{ activities_per_person.previous_page_number }}</a></li>
+           {%endif%}    
+               <li class="active"><span>{{activities_per_person.number }} <span class="sr-only"></span></span></li>
+               
+               {% if activities_per_person.has_next %}
+               <li class="disabled"><a href="?page4={{ activities_per_person.next_page_number }}">{{ activities_per_person.next_page_number }} </a></li>
+               {% endif %}
+           {% if activities_per_person.has_next %}
+           {%if activities_per_person.number != activities_per_person.paginator.num_pages|add:-1 %}
+           {%if activities_per_person.number != activities_per_person.paginator.num_pages|add:-2 %}
+           <li class="disabled ">...</a></li>
+           {% endif %} 
+           <li class="disabled "><a href="?page4={{activities_per_person.paginator.num_pages}}">{{activities_per_person.paginator.num_pages}}</a></li>
+           {% endif %}   
+           <li class="disabled"><a href="?page4={{ activities_per_person.next_page_number }}">&raquo;</a></li>
+           {% else %}
+               <li class="disabled"><span>&raquo;</span></li>
+           {% endif %}
+           </ul>
+       {% endif %}
+      </div>   
+    </div>
+ </div>
+</div>
+<script>
+    new Chart(document.getElementById("bar-chart"), {
+        type: 'bar',
+        data: {
+          labels:  [{% for pers in personsInteractions %}"{{pers.0}}", {% endfor %}],
+          datasets: [
+            {
+              label: "Interactions",
+              backgroundColor: [{% for pers in personsInteractions %}"#c45850", {% endfor %} ],
+              data: [{% for pers in personsInteractions %} {{pers.1}} , {% endfor %}]
+            }
+          ]
+        },
+        options: {
+          legend: { display: false },
+          title: {
+            display: true,
+            text: ''
+          }
+        }
+    });
+    new Chart(document.getElementById("bar-chart3"), {
+          type: 'bar',
+          data: {
+            labels:  [{% for act in activitiesInteractions %}"{{act.0}}", {% endfor %}],
+            datasets: [
+              {
+                label: "Interactions",
+                backgroundColor: [{% for act in activitiesInteractions %}"#c45850", {% endfor %} ],
+                data: [{% for act in activitiesInteractions %} {{act.1}} , {% endfor %}]
+              }
+            ]
+          },
+          options: {
+            legend: { display: false },
+            title: {
+              display: true,
+              text: 'Predicted world population (millions) in 2050'
+            }
+          }
+      });
+      new Chart(document.getElementById("line-chart"), {
+  type: 'line',
+  data: {
+    labels: [{% for day in lastDays %}"{{day.0}}", {% endfor %}],
+    datasets: [{ 
+        data: [{% for day in lastDays %} {{day.1}} , {% endfor %}],
+        label: "Interactions",
+        borderColor: "#c45850",
+        fill: false
+      }
+    ]
+  },
+  options: {
+    title: {
+      display: true,
+      text: 'Activity in last 7 days'
+    }
+  }
+});
+new Chart(document.getElementById("line-chart2"), {
+  type: 'line',
+  data: {
+    labels: [{% for week in lastWeeks %}"{{week.0}}", {% endfor %}],
+    datasets: [{ 
+        data: [{% for week in lastWeeks %} {{week.1}} , {% endfor %}],
+        label: "Interactions",
+        borderColor: "#c45850",
+        fill: false
+      }
+    ]
+  },
+  options: {
+    title: {
+      display: true,
+      text: 'Activity in last weeks'
+    }
+  }
+});
+   </script> 
+</body>

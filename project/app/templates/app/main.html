@@ -1,0 +1,127 @@
+{%  include 'app/head.html' %}
+<body>
+   
+    {%  include 'app/navbar.html' %}
+<div class="container">
+  <div class="row">
+    <div class="col backgroundWhite">
+    
+      <h3><i class="fas fa-user-friends"></i>Persons:</h3> 
+      <div class="count">{{personCount}}</div>
+    </div>
+    <div class="col backgroundWhite">
+     
+      <h3> <i class="fas fa-walking"></i> Activities:</h3>
+      <div class="count">{{activityCount}}</div>
+    </div>
+    <div class="col backgroundWhite">
+     <h3><i class="fas fa-walking"></i>Last activities</h3>
+     <ul >
+    {% for activity in lastActivities %}
+          <li >
+            <i class="fas fa-walking"></i>
+              <a href="{% url 'detailPerson' activity.person.id %}">{{activity.actor}}</a>
+              {{activity.verb}}
+              {{activity.object}}
+              {{activity.timestamp}}
+          </li>
+      {% endfor %}
+     </ul>
+    </div>   
+  </div>
+  <div class="row ">
+    <div class="col backgroundWhite">
+      <canvas id="bar-chart" width="33%" height="33%" ></canvas>
+    </div>
+    <div class="col backgroundWhite">
+      <canvas id="bar-chart6" width="33%" height="33%" ></canvas>
+    </div>
+    <div class="col backgroundWhite">
+      <canvas id="bar-chart3" width="33%" height="33%" ></canvas>
+    </div>
+  </div>
+</div>
+<script>
+      new Chart(document.getElementById("bar-chart"), {
+          type: 'bar',
+          data: {
+            labels:  [{% for pers in personsInteractions %}"{{pers.0}}", {% endfor %}],
+            datasets: [
+              {
+                label: "Interactions",
+                backgroundColor: [{% for pers in personsInteractions %}"#c45850", {% endfor %} ],
+                data: [{% for pers in personsInteractions %} {{pers.1}} , {% endfor %}]
+              }
+            ]
+          },
+          options: {
+            legend: { display: false },
+            title: {
+              display: true,
+              text: ''
+            }
+          }
+      });
+      
+      new Chart(document.getElementById("line-chart"), {
+        type: 'line',
+        data: {
+          labels: [{% for day in lastDays %}"{{day.0}}", {% endfor %}],
+          datasets: [{ 
+              data: [{% for day in lastDays %}"{{day.1}}", {% endfor %}],
+              label: "Interactions",
+              borderColor: "#c45850",
+              fill: false
+            }
+          ]
+        },
+        options: {
+          title: {
+            display: true,
+            text: 'World population per region (in millions)'
+          }
+        }
+      });
+      new Chart(document.getElementById("bar-chart3"), {
+          type: 'bar',
+          data: {
+            labels:  [{% for act in activitiesInteractions %}"{{act.0}}", {% endfor %}],
+            datasets: [
+              {
+                label: "Interactions",
+                backgroundColor: [{% for act in activitiesInteractions %}"#c45850", {% endfor %} ],
+                data: [{% for act in activitiesInteractions %} {{act.1}} , {% endfor %}]
+              }
+            ]
+          },
+          options: {
+            legend: { display: false },
+            title: {
+              display: true,
+              text: 'Predicted world population (millions) in 2050'
+            }
+          }
+      });
+      new Chart(document.getElementById("bar-chart6"), {
+          type: 'bar',
+          data: {
+            labels:  [{% for act in objectsInteractions %}"{{act.0}}", {% endfor %}],
+            datasets: [
+              {
+                label: "Interactions",
+                backgroundColor: [{% for act in objectsInteractions %}"#c45850", {% endfor %} ],
+                data: [{% for act in objectsInteractions %} {{act.1}} , {% endfor %}]
+              }
+            ]
+          },
+          options: {
+            legend: { display: false },
+            title: {
+              display: true,
+              text: 'Predicted world population (millions) in 2050'
+            }
+          }
+      });
+    </script>
+</body>
+</html>
